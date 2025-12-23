@@ -1,0 +1,364 @@
+name: 🔥 BizAI Turborepo CI/CD
+
+on:
+  push:
+    branches: [main, production]
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - '.github/workflows/deploy.yml'
+      - 'package.json'
+      - 'turbo.json'
+      - 'pnpm-workspace.yaml'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # للتشغيل اليدوي
+
+# Environment variables shared across all jobs
+env:
+  NODE_VERSION: '20'  # خفضت من 24 ليكون متوافقًا مع biome
+  TURBO_VERSION: '2.0.0'
+  NPM_VERSION: '10.0.0'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: 'bizai'
+  TURBO_REMOTE_CACHE: 'true'
+
+jobs:
+  # ============================================
+  # 0. الفحص التلقائي باستخدام Biome (جديد)
+  # ============================================
+  code-quality-check:
+    name: 🔍 Code Quality & Auto-fix
+    runs-on: ubuntu-latest
+    outputs:
+      code_quality_status: ${{ steps.biome-fix.outputs.status }}
+      files_changed: ${{ steps.biome-fix.outputs.files_changed }}
+    permissions:
+      contents: write  # ضروري للـ auto-commit
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ⚙️ Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
+      - name: 📝 Check code quality with Biome
+        id: biome-check
+        run: |
+          echo "=== Running Biome Code Quality Check ==="
+          # فحص فقط بدون إصلاحات
+          biome ci .
+          echo "✅ Code quality check passed"
+
+      - name: 🔧 Run Biome Auto-fix
+        id: biome-fix
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          echo "=== Applying Biome Auto-fixes ==="
+          
+          # تطبيق الإصلاحات التلقائية
+          biome check --write --unsafe .
+          
+          # حساب الملفات التي تغيرت
+          CHANGED_COUNT=$(git diff --name-only | wc -l || echo 0)
+          echo "files_changed=$CHANGED_COUNT" >> $GITHUB_OUTPUT
+          echo "status=$([ $CHANGED_COUNT -gt 0 ] && echo 'fixed' || echo 'clean')" >> $GITHUB_OUTPUT
+          
+          if [ $CHANGED_COUNT -gt 0 ]; then
+            echo "🔄 Fixed $CHANGED_COUNT files with Biome"
+          else
+            echo "✅ Code is already clean"
+          fi
+
+      - name: 💾 Commit and push fixes automatically
+        if: steps.biome-fix.outputs.files_changed != '0'
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: |
+            🤖 chore(auto-fix): Biome formatting & linting
+            
+            Applied automatic code fixes:
+            • Code formatting and style fixes
+            • Lint rule violations
+            • Import organization
+            
+            [skip ci]
+          commit_user_name: 'Biome Auto-fixer 🤖'
+          commit_user_email: 'bot@bizai-factory.com'
+          branch: ${{ github.head_ref || github.ref }}
+
+  # ============================================
+  # 1. الفحص الأمني والامتثال (محدث)
+  # ============================================
+  security-compliance:
+    name: 🔐 Security & Compliance
+    runs-on: ubuntu-latest-8core
+    needs: code-quality-check
+    outputs:
+      security_status: ${{ steps.security-output.outputs.status }}
+      vulnerabilities: ${{ steps.security-output.outputs.vulnerabilities }}
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🛠️ Setup Turborepo environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: 📦 Install turbo globally
+        run: npm install -g turbo@${{ env.TURBO_VERSION }}
+
+      - name: ⚙️ Configure npm for security
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm config set audit true
+          npm config set fund false
+          npm config set progress false
+
+      - name: 🧹 Install dependencies (turbo-optimized)
+        run: |
+          # تنظيف cache أولاً
+          rm -rf node_modules/.cache .turbo
+          
+          # تثبيت dependencies باستخدام turbo
+          npm install --legacy-peer-deps --no-audit --no-fund
+
+      - name: 🛡️ Run Biome security check
+        run: |
+          echo "=== Running Biome Security Rules Check ==="
+          # تشغيل قواعد الأمان فقط من Biome
+          biome check --rules=security .
+
+      - name: 🔍 Run npm audit with custom thresholds
+        id: npm-audit
+        run: |
+          echo "=== Running npm audit ==="
+          
+          # فحص Critical vulnerabilities فقط
+          AUDIT_OUTPUT=$(npm audit --json --audit-level=critical 2>/dev/null || true)
+          
+          if [ -n "$AUDIT_OUTPUT" ] && [ "$AUDIT_OUTPUT" != "null" ]; then
+            CRITICAL_COUNT=$(echo "$AUDIT_OUTPUT" | jq '.metadata.vulnerabilities.critical // 0')
+            HIGH_COUNT=$(echo "$AUDIT_OUTPUT" | jq '.metadata.vulnerabilities.high // 0')
+            
+            if [ "$CRITICAL_COUNT" -gt 0 ]; then
+              echo "::error ::🚨 Critical vulnerabilities found: $CRITICAL_COUNT"
+              echo "status=failed" >> $GITHUB_OUTPUT
+              echo "vulnerabilities=$CRITICAL_COUNT critical, $HIGH_COUNT high" >> $GITHUB_OUTPUT
+              exit 1
+            elif [ "$HIGH_COUNT" -gt 5 ]; then  # أكثر من 5 high vulnerabilities
+              echo "::warning ::⚠️ High vulnerabilities found: $HIGH_COUNT"
+              echo "status=warning" >> $GITHUB_OUTPUT
+              echo "vulnerabilities=0 critical, $HIGH_COUNT high" >> $GITHUB_OUTPUT
+            else
+              echo "✅ No critical vulnerabilities found"
+              echo "status=passed" >> $GITHUB_OUTPUT
+              echo "vulnerabilities=0 critical, $HIGH_COUNT high" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "✅ No vulnerabilities found"
+            echo "status=passed" >> $GITHUB_OUTPUT
+            echo "vulnerabilities=0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 📋 Check package.json compliance
+        run: |
+          echo "=== Package Compliance Check ==="
+          
+          # فحص وجود biome في package.json
+          if node -e "const pkg = require('./package.json'); console.log('✅ Root package.json has Biome:', !!pkg.devDependencies?.['@biomejs/biome'])" 2>/dev/null; then
+            echo "✅ Biome is configured in root package.json"
+          else
+            echo "::warning ::⚠️ Biome not found in root package.json"
+          fi
+          
+          # فحص جميع package.json للتأكد من توافق القواعد
+          for pkg in packages/*/ apps/*/; do
+            if [ -f "${pkg}package.json" ]; then
+              PKG_NAME=$(basename "$pkg")
+              echo "🔍 Checking $PKG_NAME for Biome compatibility..."
+            fi
+          done
+
+      - name: 📊 Security output
+        id: security-output
+        run: |
+          echo "Security check completed with status: ${{ steps.npm-audit.outputs.status }}"
+          echo "status=${{ steps.npm-audit.outputs.status }}" >> $GITHUB_OUTPUT
+          echo "vulnerabilities=${{ steps.npm-audit.outputs.vulnerabilities }}" >> $GITHUB_OUTPUT
+
+  # ============================================
+  # 2. الاختبار والبناء (محدث لدعم Biome)
+  # ============================================
+  test-build:
+    name: 🧪 Test & Build
+    runs-on: ubuntu-latest-8core
+    needs: [code-quality-check, security-compliance]
+    if: |
+      needs.code-quality-check.outputs.code_quality_status != 'failed' &&
+      needs.security-compliance.outputs.security_status != 'failed'
+    strategy:
+      matrix:
+        app: [web, ai-worker]
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: 🛠️ Setup Node.js with turbo cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: ⚡ Configure turbo remote cache
+        run: |
+          if [ -n "${{ secrets.TURBO_TOKEN }}" ]; then
+            npx turbo login
+            npx turbo link --no-git-check
+            echo "TURBO_REMOTE_CACHE_ENABLED=true" >> $GITHUB_ENV
+          else
+            echo "TURBO_REMOTE_CACHE_ENABLED=false" >> $GITHUB_ENV
+          fi
+
+      - name: 📦 Install dependencies (turbo cache optimized)
+        run: |
+          # استخدام turbo cache إن وجد
+          if [ "$TURBO_REMOTE_CACHE_ENABLED" = "true" ]; then
+            echo "🚀 Using turbo remote cache"
+            TURBO_ARGS="--remote-only"
+          else
+            echo "⚡ Using local cache only"
+            TURBO_ARGS=""
+          fi
+          
+          npm install --legacy-peer-deps --no-audit --no-fund
+
+      - name: ✨ Run Biome formatting check
+        run: |
+          echo "=== Checking code formatting with Biome ==="
+          biome ci .
+
+      - name: 🔨 Build specific app
+        id: build-app
+        run: |
+          echo "=== Building @bizai/${{ matrix.app }} ==="
+          
+          if [ "${{ matrix.app }}" = "web" ]; then
+            # بناء Next.js
+            cd apps/web
+            npm run build 2>&1 | tail -20
+            BUILD_STATUS=$?
+            
+            # التحقق من البناء الناجح
+            if [ $BUILD_STATUS -eq 0 ] && [ -d ".next" ]; then
+              echo "✅ Next.js build successful"
+              echo "build_output=.next directory created" >> $GITHUB_OUTPUT
+            else
+              echo "::error ::Next.js build failed"
+              exit 1
+            fi
+          else
+            # بناء AI Worker
+            cd apps/ai-worker
+            npm run build
+            BUILD_STATUS=$?
+            
+            if [ $BUILD_STATUS -eq 0 ] && [ -f "dist/index.js" ]; then
+              echo "✅ AI Worker build successful"
+              echo "build_output=dist/index.js created" >> $GITHUB_OUTPUT
+            else
+              echo "::error ::AI Worker build failed"
+              exit 1
+            fi
+          fi
+
+      - name: 📝 TypeScript type check
+        run: |
+          cd apps/${{ matrix.app }}
+          npm run type-check
+
+      - name: 🧪 Run tests
+        run: |
+          cd apps/${{ matrix.app }}
+          if [ -f "package.json" ] && grep -q '"test"' package.json; then
+            npm test -- --coverage
+          else
+            echo "⚠️ No tests configured for ${{ matrix.app }}"
+          fi
+
+      - name: 📊 Upload test coverage
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          directory: ./apps/${{ matrix.app }}/coverage
+          flags: ${{ matrix.app }}
+          name: ${{ matrix.app }}-coverage
+
+  # ============================================
+  # 3. نشر الحزم (npm packages) (محدث)
+  # ============================================
+  publish-packages:
+    name: 📦 Publish Packages
+    runs-on: ubuntu-latest-8core
+    needs: [code-quality-check, security-compliance, test-build]
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      needs.security-compliance.outputs.security_status != 'failed' &&
+      needs.code-quality-check.outputs.code_quality_status != 'failed'
+    outputs:
+      packages_published: ${{ steps.publish-check.outputs.published }}
+      published_list: ${{ steps.publish-check.outputs.package_list }}
+    environment: npm-publishing
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: ⬇️ Checkout with full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🛠️ Setup Node.js for publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@bizai'
+
+      - name: 🔐 Configure npm authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_PUBLISH_TOKEN }}" > .npmrc
+          npm config set @bizai:registry https://registry.npmjs.org
+          npm config set access public
+          echo "🔑 Logged in as: $(npm whoami)"
+
+      - name: 🔍 Check code quality with Biome before publish
+        run: |
+          echo "=== Final Biome check before publishing ==="
+          biome ci .
+
+      - name: 📦 Build all packages with turbo
+        run: |
+          npm install --legacy-peer-deps
+          turbo build --filter=./packages/* --output-logs=summary
+
+  # بقية الوظائف (deploy-vercel, deploy-worker, notify-summary) تبقى كما هي
+  # مع إضافة needs: [code-quality-check] في البداية إذا لزم الأمر
