@@ -1,0 +1,10 @@
+export const Check = (props: any) => <span>✓</span>;
+export const X = (props: any) => <span>✗</span>;
+export const ArrowRight = (props: any) => <span>→</span>;
+export const Star = (props: any) => <span>★</span>;
+export const Zap = (props: any) => <span>⚡</span>;
+export const Users = (props: any) => <span>👥</span>;
+export const Shield = (props: any) => <span>🛡️</span>;
+export const CreditCard = (props: any) => <span>💳</span>;
+export const CheckCircle = (props: any) => <span>✅</span>;
+export const XCircle = (props: any) => <span>❌</span>;
