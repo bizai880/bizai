@@ -1,0 +1,277 @@
+version: '3.8'
+
+services:
+  # ==================== قواعد البيانات الأساسية ====================
+  postgres:
+    image: postgres:15-alpine
+    container_name: bizai-postgres-dev
+    environment:
+      POSTGRES_USER: bizai_dev
+      POSTGRES_PASSWORD: dev_pass_123
+      POSTGRES_DB: bizai_dev
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+      POSTGRES_HOST_AUTH_METHOD: trust  # للتطوير فقط
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init-scripts:/docker-entrypoint-initdb.d:ro
+    networks:
+      - bizai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bizai_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: >
+      postgres 
+      -c fsync=off 
+      -c full_page_writes=off 
+      -c synchronous_commit=off 
+      -c max_connections=200
+      -c shared_buffers=256MB
+    # إعدادات متوافقة مع gitpod.yml و devcontainer.json
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=5432"
+      - "com.gitpod.port.name=PostgreSQL"
+
+  redis:
+    image: redis:7-alpine
+    container_name: bizai-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./infra/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    networks:
+      - bizai-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: >
+      redis-server 
+      --save "" 
+      --appendonly no 
+      --maxmemory 256mb 
+      --maxmemory-policy allkeys-lru
+      --requirepass ${REDIS_PASSWORD:-dev_redis_pass}
+    environment:
+      - REDIS_PASSWORD=dev_redis_pass
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=6379"
+      - "com.gitpod.port.name=Redis"
+
+  # ==================== خدمات التطوير ====================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: bizai-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    networks:
+      - bizai-network
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=8025"
+      - "com.gitpod.port.name=Mailhog"
+
+  minio:
+    image: minio/minio:latest
+    container_name: bizai-minio-dev
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_DEFAULT_BUCKETS: "uploads,exports,temp"
+    volumes:
+      - minio_data:/data
+    networks:
+      - bizai-network
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=9001"
+      - "com.gitpod.port.name=MinIO"
+
+  # ==================== مراقبة وأدوات ====================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: bizai-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bizai.dev
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./infra/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    networks:
+      - bizai-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=5050"
+      - "com.gitpod.port.name=pgAdmin"
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: bizai-redis-commander-dev
+    environment:
+      REDIS_HOSTS: local:redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: dev_redis_pass
+    ports:
+      - "8081:8081"
+    networks:
+      - bizai-network
+    depends_on:
+      redis:
+        condition: service_healthy
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=8081"
+      - "com.gitpod.port.name=Redis Commander"
+
+  # ==================== خدمات AI/ML (اختياري) ====================
+  local-ai:
+    image: quay.io/go-skynet/local-ai:latest
+    container_name: bizai-local-ai-dev
+    ports:
+      - "8080:8080"
+    environment:
+      THREADS: 4
+      CONTEXT_SIZE: 512
+      DEBUG: true
+      MODELS_PATH: /models
+      # نموذج خفيف للتطوير
+      MODEL: "orca-mini-3b.ggmlv3.q4_0.bin"
+    volumes:
+      - ai_models:/models
+      - ./infra/ai/models.yml:/models/models.yml:ro
+    networks:
+      - bizai-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    labels:
+      - "devcontainer.service=true"
+      - "com.gitpod.port=8080"
+      - "com.gitpod.port.name=LocalAI"
+
+# ==================== إعدادات الشبكة والمجلدات ====================
+networks:
+  bizai-network:
+    driver: bridge
+    name: bizai-dev-network
+    # إعدادات متوافقة مع Gitpod و Ona
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    labels:
+      - "devcontainer.network=true"
+
+volumes:
+  postgres_data:
+    name: bizai-postgres-data
+    driver: local
+    labels:
+      - "devcontainer.volume=true"
+      - "com.gitpod.persistent=true"
+  
+  redis_data:
+    name: bizai-redis-data
+    driver: local
+    labels:
+      - "devcontainer.volume=true"
+      - "com.gitpod.persistent=true"
+  
+  minio_data:
+    name: bizai-minio-data
+    driver: local
+    labels:
+      - "devcontainer.volume=true"
+      - "com.gitpod.persistent=true"
+  
+  pgadmin_data:
+    name: bizai-pgadmin-data
+    driver: local
+    labels:
+      - "devcontainer.volume=true"
+      - "com.gitpod.persistent=true"
+  
+  ai_models:
+    name: bizai-ai-models
+    driver: local
+    labels:
+      - "devcontainer.volume=true"
+
+# ==================== إعدادات متوافقة مع Ona Automations ====================
+x-ona-config: &ona-config
+  max_wait_time: 120
+  health_check_interval: 5
+  restart_policy: unless-stopped
+
+x-gitpod-config: &gitpod-config
+  expose: true
+  auto_forward: true
+  preview: true
+
+x-devcontainer-config: &devcontainer-config
+  service: postgres
+  remoteEnv:
+    DATABASE_URL: "postgresql://bizai_dev:dev_pass_123@postgres:5432/bizai_dev"
+    REDIS_URL: "redis://:dev_redis_pass@redis:6379"
+    MINIO_ENDPOINT: "http://minio:9000"
+    MINIO_ACCESS_KEY: "minioadmin"
+    MINIO_SECRET_KEY: "minioadmin"
+    LOCAL_AI_URL: "http://local-ai:8080"
+
+# تطبيق الإعدادات على جميع الخدمات
+services:
+  postgres:
+    <<: *ona-config
+    <<: *gitpod-config
+    <<: *devcontainer-config
+  
+  redis:
+    <<: *ona-config
+    <<: *gitpod-config
+    <<: *devcontainer-config
+  
+  mailhog:
+    <<: *gitpod-config
+  
+  minio:
+    <<: *gitpod-config
+    <<: *devcontainer-config
+  
+  pgadmin:
+    <<: *gitpod-config
+  
+  redis-commander:
+    <<: *gitpod-config
+  
+  local-ai:
+    <<: *gitpod-config
+    <<: *devcontainer-config

@@ -1,0 +1,235 @@
+{
+  "name": "bizai-factory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "npm@10.0.0",
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=./apps/web",
+    "dev:ai-worker": "turbo dev --filter=./apps/ai-worker",
+    "dev:turbopack": "turbo dev --filter=./apps/web -- --turbopack",
+    "build": "turbo build",
+    "build:web": "turbo build --filter=./apps/web",
+    "build:ai-worker": "turbo build --filter=./apps/ai-worker",
+    "build:shared": "turbo build --filter=./packages/shared",
+    "build:prod": "turbo build --mode=production",
+    "start": "turbo start --filter=./apps/web",
+    "start:prod": "NODE_ENV=production turbo start --filter=./apps/web",
+    "lint": "turbo lint",
+    "lint:fix": "turbo lint -- --fix",
+    "type-check": "turbo type-check",
+    "type-check:watch": "turbo type-check -- --watch",
+    "test": "turbo test",
+    "test:watch": "turbo test -- --watch",
+    "test:ci": "turbo test -- --coverage",
+    "clean": "turbo clean && rm -rf node_modules/.cache",
+    "clean:all": "turbo clean && rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:install": "npm run clean:all && npm install",
+    "install:all": "npm install && turbo run install",
+    "install:ci": "npm ci --legacy-peer-deps",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
+    "fix:all": "npm run format && npm run lint:fix",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
+    "docker:prod": "docker-compose -f infra/docker/docker-compose.prod.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.dev.yml down",
+    "gitpod:setup": "bash scripts/setup-basic.sh",
+    "gitpod:open": "gp open preview",
+    "ona:audit": "ona run automation security-audit-ai",
+    "ona:fix": "ona run automation turbo-fix-ai",
+    "ona:optimize": "ona run automation turbo-performance-ai",
+    "vercel:deploy": "cd apps/web && vercel --prod",
+    "vercel:preview": "cd apps/web && vervel",
+    "vercel:env": "cd apps/web && vercel env pull .env.local",
+    "vercel:link": "cd apps/web && vercel link",
+    "health": "turbo run type-check lint build --dry-run",
+    "prepare": "husky install || echo 'Husky not installed'",
+    "postinstall": "npm run prepare",
+    "biome:check": "biome check --unsafe .",
+    "biome:fix": "biome check --write --unsafe .",
+    "biome:format": "biome format --write .",
+    "biome:ci": "biome ci .",
+    "fix:all": "npm run biome:fix"
+    
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "turbo": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-turbo": "^2.0.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.2.9",
+    "prettier": "^3.3.3",
+    "typescript": "^5.0.0",
+    "@biomejs/biome": "^1.6.4"
+  },
+  "peerDependencies": {
+    "node": ">=v20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "engines": {
+    "node": ">=v20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "turbo": {
+    "tasks": {
+      "build": {
+        "dependsOn": ["^build"],
+        "outputs": [".next/**", "dist/**", "!dist/.next/**"]
+      },
+      "dev": {
+        "cache": false,
+        "persistent": true
+      },
+      "lint": {
+        "outputs": []
+      },
+      "type-check": {
+        "outputs": []
+      },
+      "test": {
+        "outputs": ["coverage/**"]
+      },
+      "clean": {
+        "cache": false
+      }
+    },
+    "globalDependencies": [
+      "**/.env.*",
+      "**/.env.local",
+      "turbo.json",
+      "package.json"
+    ],
+    "globalEnv": [
+      "CI",
+      "NODE_ENV",
+      "VERCEL",
+      "GITPOD_WORKSPACE_URL",
+      "ONA_API_KEY"
+    ]
+  },
+  "ona": {
+    "projectType": "turborepo",
+    "automations": {
+      "default": ["turbo-fix-ai", "security-audit-ai"],
+      "ci": ["turbo-performance-ai"]
+    },
+    "environment": {
+      "nodeVersion": "20",
+      "turboVersion": "2.0.0",
+      "cacheStrategy": "distributed"
+    }
+  },
+  "gitpod": {
+    "tasks": [
+      {
+        "name": "Setup",
+        "init": "npm run gitpod:setup"
+      }
+    ],
+    "ports": [
+      {
+        "port": 3000,
+        "onOpen": "open-preview",
+        "name": "Next.js App"
+      },
+      {
+        "port": 3001,
+        "onOpen": "ignore",
+        "name": "AI Worker"
+      }
+    ],
+    "vscodeExtensions": [
+      "turbopack.build.turbopack-vscode",
+      "bradlc.vscode-tailwindcss",
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-azuretools.vscode-docker"
+    ]
+  },
+  "vercel": {
+    "scope": "bizai",
+    "git": {
+      "deploymentEnabled": true,
+      "autoAlias": true
+    },
+    "projects": {
+      "web": {
+        "path": "apps/web"
+      }
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "publishConfig": {
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bizai183/bizai.git"
+  },
+  "keywords": [
+    "turborepo",
+    "nextjs",
+    "turbopack",
+    "monorepo",
+    "typescript"
+  ],
+  "author": "BizAI Team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bizai183/bizai/issues"
+  },
+  "homepage": "https://bizai.dev",
+  "files": [
+    "apps/",
+    "packages/",
+    "scripts/",
+    "infra/",
+    "*.json",
+    "*.md"
+  ],
+  "resolutions": {
+    "turbo": "^2.0.0",
+    "next": "15.5.9",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3"
+  }
+}

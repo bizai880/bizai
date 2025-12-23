@@ -1,0 +1,13 @@
+{
+  "orgId": "bizai",
+  "projectId": "prj_fxdf89FeazmAgMH3ar2cI0ghIQtW",
+  "settings": {
+    "IssuedAt": 1766053857,
+    "framework": "nextjs",
+    "devCommand": "npm run dev",
+    "installCommand": "npm install",
+    "buildCommand": "npm run build",
+    "outputDirectory": "apps/web/.next",
+    "rootDirectory": "apps/web"
+  }
+}

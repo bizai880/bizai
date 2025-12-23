@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  # PostgreSQL - نسخة تطوير مبسطة
+  postgres:
+    environment:
+      POSTGRES_USER: bizai_dev
+      POSTGRES_PASSWORD: dev_password_123
+      POSTGRES_DB: bizai_development
+    # تعطيل SSL للتطوير لتسريع الاتصال
+    command: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      # يمكن إضافة بيانات ابتدائية للتطوير
+      - ./scripts/init-dev-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # Redis - نسخة تطوير
+  redis:
+    command: redis-server
+    # بدون كلمة مرور للتطوير لتسهيل الاستخدام
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+
+  # App - نسخة تطوير (اختياري، لأن Gitpod يستخدم بيئة Node.js مباشرة)
+  # app:
+  #   build: .
+  #   environment:
+  #     NODE_ENV: development
+  #     DATABASE_URL: postgresql://bizai_dev:dev_password_123@postgres:5432/bizai_development
+  #     REDIS_URL: redis://redis:6379
+  #   volumes:
+  #     - .:/app
+  #     - /app/node_modules
+  #   command: npm run dev
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - postgres
+  #     - redis
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:

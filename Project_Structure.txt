@@ -1,0 +1,107 @@
+.
+├── LICENSE
+├── Project_Structure.txt
+├── README.md
+├── SECURITY.md
+├── apps
+│   ├── ai-worker
+│   │   ├── Dockerfile
+│   │   ├── dist
+│   │   ├── eslint.config.js
+│   │   ├── eslint.config.mjs
+│   │   ├── lib
+│   │   ├── package.json
+│   │   ├── railway.json
+│   │   ├── src
+│   │   ├── test-imports.js
+│   │   ├── test-imports.ts
+│   │   └── tsconfig.json
+│   └── web
+│       ├── Dockerfile
+│       ├── app
+│       ├── components
+│       ├── eslint.config.js
+│       ├── fix-all-ts-errors.sh
+│       ├── hooks
+│       ├── lib
+│       ├── middleware.ts
+│       ├── next-env.d.ts
+│       ├── next.config.js
+│       ├── node_modules
+│       ├── package.json
+│       ├── package.json.backup
+│       ├── tailwind.config.js
+│       ├── test-inngest-import.ts
+│       ├── tsconfig.fix.json
+│       ├── tsconfig.json
+│       ├── tsconfig.json.backup
+│       └── tsconfig.tsbuildinfo
+├── docker-compose.yml
+├── infra
+│   └── docker
+│       ├── app
+│       ├── docker-compose.dev.yml
+│       ├── docker-compose.grafana.yml
+│       ├── docker-compose.monitoring.yml
+│       ├── docker-compose.prod.yml
+│       ├── docker-compose.yml
+│       ├── monitoring
+│       ├── nginx
+│       ├── postgres
+│       ├── setup.sh
+│       └── start.sh
+├── package.json
+├── package.json.backup.1765824925
+├── package.json.bak
+├── packages
+│   └── shared
+│       └── src
+├── scripts
+│   ├── cleanup-lfs.sh
+│   ├── final-fix.sh
+│   ├── final-swcminify.sh
+│   ├── fix-admin-auth.sh
+│   ├── fix-ai-worker.sh
+│   ├── fix-all-auth-pages.sh
+│   ├── fix-all-problems.sh
+│   ├── fix-api-route.sh
+│   ├── fix-api-worker.sh
+│   ├── fix-api.sh
+│   ├── fix-backup-folders.sh
+│   ├── fix-build-issues.sh
+│   ├── fix-build-repo.sh
+│   ├── fix-codespace.sh
+│   ├── fix-components-path.sh
+│   ├── fix-final-typescript.sh
+│   ├── fix-health-final.sh
+│   ├── fix-inngest-complete.sh
+│   ├── fix-inngest-files.sh
+│   ├── fix-inngest-final.sh
+│   ├── fix-login-page.sh
+│   ├── fix-missing-dep.sh
+│   ├── fix-missing-files.sh
+│   ├── fix-next-config-final.sh
+│   ├── fix-next-config.sh
+│   ├── fix-package-manager.sh
+│   ├── fix-security.sh
+│   ├── fix-storage.sh
+│   ├── fix-supabase.sh
+│   ├── fix-swcMinify-last.sh
+│   ├── fix-ts-next.sh
+│   ├── fix-turbo-json.sh
+│   ├── fix-turbo-warnings.sh
+│   ├── fix-turbo.sh
+│   ├── fix-typescript.sh
+│   ├── fix-zod.sh
+│   ├── install-node.sh
+│   ├── nuclear-health-fix.sh
+│   ├── post-create.sh
+│   ├── remove-lfs-hooks.sh
+│   ├── reset-codespace.sh
+│   ├── revert_to_npm.sh
+│   ├── setup-basic.sh
+│   ├── ultimate-fix.sh
+│   └── unclear-fix.sh
+├── turbo.json
+└── turbo.json.backup
+
