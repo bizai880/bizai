@@ -30,7 +30,7 @@
     "install:ci": "npm ci --legacy-peer-deps",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,css}\"",
-    "fix:all": "npm run format && npm run lint:fix",
+    "fix:all": "npm run biome:fix",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:prod": "docker-compose -f infra/docker/docker-compose.prod.yml up -d",
     "docker:down": "docker-compose -f docker-compose.dev.yml down",
@@ -49,30 +49,28 @@
     "biome:check": "biome check --unsafe .",
     "biome:fix": "biome check --write --unsafe .",
     "biome:format": "biome format --write .",
-    "biome:ci": "biome ci .",
-    "fix:all": "npm run biome:fix"
-    
+    "biome:ci": "biome ci ."
   },
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "dependencies": {
-    "turbo": "^2.0.0"
+    "turbo": "^2.7.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^1.6.4",
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-turbo": "^2.0.0",
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.0.0",
     "lint-staged": "^15.2.9",
     "prettier": "^3.3.3",
-    "typescript": "^5.0.0",
-    "@biomejs/biome": "^1.6.4"
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
     "node": ">=v20.0.0",
@@ -97,8 +95,14 @@
   "turbo": {
     "tasks": {
       "build": {
-        "dependsOn": ["^build"],
-        "outputs": [".next/**", "dist/**", "!dist/.next/**"]
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          ".next/**",
+          "dist/**",
+          "!dist/.next/**"
+        ]
       },
       "dev": {
         "cache": false,
@@ -111,7 +115,9 @@
         "outputs": []
       },
       "test": {
-        "outputs": ["coverage/**"]
+        "outputs": [
+          "coverage/**"
+        ]
       },
       "clean": {
         "cache": false
@@ -134,8 +140,13 @@
   "ona": {
     "projectType": "turborepo",
     "automations": {
-      "default": ["turbo-fix-ai", "security-audit-ai"],
-      "ci": ["turbo-performance-ai"]
+      "default": [
+        "turbo-fix-ai",
+        "security-audit-ai"
+      ],
+      "ci": [
+        "turbo-performance-ai"
+      ]
     },
     "environment": {
       "nodeVersion": "20",
