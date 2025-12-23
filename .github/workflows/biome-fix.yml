@@ -1,0 +1,36 @@
+name: Biome CI & Auto-fix
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    types: [opened, synchronized, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  biome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Biome
+        uses: biomejs/setup-biome@v2  # تأكد من استخدام الإصدار v2[citation:3]
+
+      - name: 🔄 Run Biome CI (Check only - No fixes)
+        run: biome ci .
+
+      - name: 🛠️ Run Biome Format & Lint with Auto-fix
+        id: fix
+        # الأمر الصحيح: --write --unsafe فقط
+        run: |
+          biome check --write --unsafe .
+          echo "changed=$(git diff --name-only | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: 💾 Commit and Push Auto-fixes
+        if: steps.fix.outputs.changed != '0'
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "🤖 chore(auto-fix): Applied Biome formatting and lint fixes"
