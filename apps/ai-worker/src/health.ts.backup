@@ -1,0 +1,133 @@
+import { createClient } from '@/lib/supabase/server'
+import { cache } from '@/lib/cache/redis'
+
+export interface HealthStatus {
+  status: 'healthy' | 'degraded' | 'unhealthy'
+  checks: {
+    database: boolean
+    redis: boolean
+    aiProviders: {
+      groq: boolean
+      gemini: boolean
+      local: boolean
+    }
+    storage: boolean
+  }
+  timestamp: string
+  uptime: number
+  version: string
+}
+
+export async function getHealthStatus(): Promise<HealthStatus> {
+  const startTime = Date.now()
+  const checks = {
+    database: false,
+    redis: false,
+    aiProviders: {
+      groq: false,
+      gemini: false,
+      local: false
+    },
+    storage: false
+  }
+
+  try {
+    // التحقق من قاعدة البيانات
+    const supabase = await createClient()
+    const { error: dbError } = await supabase
+      .from('generation_requests')
+      .select('count')
+      .limit(1)
+    
+    checks.database = !dbError
+  } catch (error) {
+    console.error('Database health check failed:', error)
+  }
+
+  try {
+    // التحقق من Redis
+    await cache.set('health:check', 'ok', 10)
+    const value = await cache.get('health:check')
+    checks.redis = value === 'ok'
+  } catch (error) {
+    console.error('Redis health check failed:', error)
+  }
+
+  try {
+    // التحقق من مزودي الذكاء الاصطناعي
+    const groqResponse = await fetch('https://api.groq.com/openai/v1/models', {
+      headers: { 'Authorization': `Bearer ${process.env.GROQ_API_KEY}` }
+    }).then(res => res.ok).catch(() => false)
+    
+    checks.aiProviders.groq = groqResponse
+    
+    // Gemini check (مبسط)
+    checks.aiProviders.gemini = !!process.env.GEMINI_API_KEY
+    
+    // Local AI check
+    const localResponse = await fetch('http://localhost:11434/api/tags', {
+      signal: AbortSignal.timeout(3000)
+    }).then(res => res.ok).catch(() => false)
+    
+    checks.aiProviders.local = localResponse
+  } catch (error) {
+    console.error('AI providers health check failed:', error)
+  }
+
+  try {
+    // التحقق من التخزين (Cloudinary)
+    checks.storage = !!process.env.CLOUDINARY_CLOUD_NAME
+  } catch (error) {
+    console.error('Storage health check failed:', error)
+  }
+
+  // حساب الحالة العامة
+  const allChecks = [
+    checks.database,
+    checks.redis,
+    checks.storage,
+    checks.aiProviders.groq || checks.aiProviders.gemini || checks.aiProviders.local
+  ]
+
+  const healthyChecks = allChecks.filter(Boolean).length
+  const totalChecks = allChecks.length
+
+  let status: 'healthy' | 'degraded' | 'unhealthy' = 'unhealthy'
+  
+  if (healthyChecks === totalChecks) {
+    status = 'healthy'
+  } else if (healthyChecks >= Math.ceil(totalChecks / 2)) {
+    status = 'degraded'
+  }
+
+  return {
+    status,
+    checks,
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: process.env.npm_package_version || '1.0.0'
+  }
+}
+
+// Express route handler للـ health check
+export function createHealthRouter() {
+  return async (req: any, res: any) => {
+    try {
+      const health = await getHealthStatus()
+      
+      res.status(health.status === 'healthy' ? 200 : 
+                health.status === 'degraded' ? 206 : 503)
+      
+      res.json({
+        ...health,
+        response_time: Date.now() - req.startTime
+      })
+    } catch (error) {
+      res.status(503).json({
+        status: 'unhealthy',
+        error: error.message,
+        timestamp: new Date().toISOString()
+      })
+    }
+  }
+}

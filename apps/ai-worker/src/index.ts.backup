@@ -1,0 +1,245 @@
+import { Inngest } from 'inngest'
+import { serve } from 'inngest/next'
+import { createClient } from '@/lib/supabase/server'
+import { aiCore } from '@/lib/ai/core'
+import { ExcelGenerator } from '@/lib/excel/generator'
+import { uploadToCloudinary } from '@/lib/storage/cloudinary'
+import { cache } from '@/lib/cache/redis'
+
+// Initialize Inngest
+const inngest = new Inngest({ 
+  id: 'bizai-ai-worker',
+  eventKey: process.env.INNGEST_EVENT_KEY || 'bizai-ai-worker-key'
+})
+
+// وظيفة معالجة Excel
+export const processExcelGeneration = inngest.createFunction(
+  { id: 'process-excel-generation', name: 'Process Excel Generation' },
+  { event: 'excel.generate' },
+  async ({ event, step }) => {
+    const { requestId, description, userId, options } = event.data
+    
+    try {
+      const supabase = await createClient()
+      
+      // تحديث الحالة
+      await step.run('update-status', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({ 
+            status: 'processing',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', requestId)
+      })
+      
+      // تحليل الوصف باستخدام الذكاء الاصطناعي
+      const analysis = await step.run('analyze-description', async () => {
+        return await aiCore.analyzeExcelRequest(description)
+      })
+      
+      // إنشاء ملف Excel
+      const excelBuffer = await step.run('generate-excel', async () => {
+        const generator = new ExcelGenerator()
+        return await generator.generateFromAnalysis(analysis)
+      })
+      
+      // رفع الملف
+      const fileUrl = await step.run('upload-file', async () => {
+        const timestamp = Date.now()
+        const fileName = `excel/${userId}/${requestId}-${timestamp}.xlsx`
+        
+        return await uploadToCloudinary(
+          excelBuffer,
+          fileName,
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+      })
+      
+      // حساب وقت المعالجة
+      const eventTimestamp = event.ts ? new Date(event.ts).getTime() : Date.now()
+      const processingTime = Math.floor(Date.now() - eventTimestamp)
+      
+      // تحديث النتيجة
+      await step.run('update-result', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({
+            status: 'completed',
+            result_url: fileUrl,
+            metadata: analysis,
+            completed_at: new Date().toISOString(),
+            processing_time: processingTime
+          })
+          .eq('id', requestId)
+      })
+      
+      // إرسال إشعار
+      await step.sendEvent('send-notification', {
+        name: 'notification.send',
+        data: {
+          userId,
+          type: 'success',
+          title: 'تم إنشاء ملف Excel بنجاح',
+          message: 'تم إنشاء ملف Excel الخاص بك وجاهز للتنزيل',
+          data: { requestId, fileUrl }
+        }
+      })
+      
+      // تخزين مؤقت للنتيجة
+      await cache.set(`result:${requestId}`, {
+        url: fileUrl,
+        metadata: analysis,
+        timestamp: new Date().toISOString()
+      }, 3600)
+      
+      return { success: true, requestId, fileUrl }
+      
+    } catch (error) {
+      console.error('Excel generation failed:', error)
+      
+      // تحديث حالة الفشل
+      const supabase = await createClient()
+      await step.run('mark-failed', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({
+            status: 'failed',
+            error: error instanceof Error ? error.message : 'Unknown error',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', requestId)
+      })
+      
+      throw error
+    }
+  }
+)
+
+// وظيفة معالجة الداشبورد
+export const processDashboardGeneration = inngest.createFunction(
+  { id: 'process-dashboard-generation', name: 'Process Dashboard Generation' },
+  { event: 'dashboard.generate' },
+  async ({ event, step }) => {
+    const { requestId, description, userId } = event.data
+    
+    try {
+      const supabase = await createClient()
+      
+      await step.run('update-status', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({ 
+            status: 'processing',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', requestId)
+      })
+      
+      const dashboardConfig = await step.run('generate-dashboard', async () => {
+        return await aiCore.generateDashboard({ description })
+      })
+      
+      await step.run('save-dashboard', async () => {
+        await supabase
+          .from('dashboards')
+          .insert({
+            id: requestId,
+            user_id: userId,
+            config: dashboardConfig,
+            created_at: new Date().toISOString()
+          })
+      })
+      
+      // حساب وقت المعالجة
+      const eventTimestamp = event.ts ? new Date(event.ts).getTime() : Date.now()
+      const processingTime = Math.floor(Date.now() - eventTimestamp)
+      
+      await step.run('update-result', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({
+            status: 'completed',
+            result_url: `/dashboard/${requestId}`,
+            metadata: dashboardConfig,
+            completed_at: new Date().toISOString(),
+            processing_time: processingTime
+          })
+          .eq('id', requestId)
+      })
+      
+      return { success: true, requestId, dashboardId: requestId }
+      
+    } catch (error) {
+      console.error('Dashboard generation failed:', error)
+      
+      // تحديث حالة الفشل
+      const supabase = await createClient()
+      await step.run('mark-failed', async () => {
+        await supabase
+          .from('generation_requests')
+          .update({
+            status: 'failed',
+            error: error instanceof Error ? error.message : 'Unknown error',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', requestId)
+      })
+      
+      throw error
+    }
+  }
+)
+
+// وظيفة تنظيف الملفات القديمة
+export const cleanupOldFiles = inngest.createFunction(
+  { id: 'cleanup-old-files', name: 'Cleanup Old Files' },
+  { cron: '0 2 * * *' }, // الساعة 2 صباحاً كل يوم
+  async ({ step }) => {
+    const supabase = await createClient()
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    
+    // البحث عن الطلبات القديمة
+    const { data: oldRequests } = await supabase
+      .from('generation_requests')
+      .select('id, result_url')
+      .lt('created_at', thirtyDaysAgo.toISOString())
+      .eq('status', 'completed')
+      .limit(100)
+    
+    for (const request of oldRequests || []) {
+      await step.run(`delete-file-${request.id}`, async () => {
+        // حذف الملف من التخزين
+        if (request.result_url?.includes('cloudinary')) {
+          // TODO: Implement Cloudinary deletion
+          console.log(`Should delete from Cloudinary: ${request.result_url}`)
+        }
+        
+        // تحديث السجل
+        await supabase
+          .from('generation_requests')
+          .update({ 
+            result_url: null, 
+            archived: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', request.id)
+      })
+    }
+    
+    return { deleted: oldRequests?.length || 0 }
+  }
+)
+
+// تصدير جميع الوظائف
+export const functions = [
+  processExcelGeneration,
+  processDashboardGeneration,
+  cleanupOldFiles
+]
+
+// إنشاء handler للـ API route
+export const handler = serve({
+  client: inngest,
+  functions
+})
