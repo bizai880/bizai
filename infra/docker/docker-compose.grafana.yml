@@ -1,0 +1,51 @@
+# في infra/docker/docker-compose.grafana.yml
+alloy:
+  image: grafana/alloy:latest
+  container_name: bizai-alloy
+  restart: unless-stopped
+  command:
+    - "run"
+    - "--config.file=/etc/alloy/config.alloy"
+    - "--server.http.listen-addr=0.0.0.0:12345"
+    - "--storage.path=/var/lib/alloy"
+    - "--log.level=info"
+    - "--enable-features=remote-configuration"
+  volumes:
+    - ./monitoring/alloy/config.alloy:/etc/alloy/config.alloy:ro
+    - alloy_data:/var/lib/alloy
+  ports:
+    - "12345:12345"
+  environment:
+    # Metrics
+    GCLOUD_HOSTED_METRICS_ID: ${GCLOUD_HOSTED_METRICS_ID}
+    GCLOUD_HOSTED_METRICS_URL: ${GCLOUD_HOSTED_METRICS_URL}
+    
+    # Logs
+    GCLOUD_HOSTED_LOGS_ID: ${GCLOUD_HOSTED_LOGS_ID}
+    GCLOUD_HOSTED_LOGS_URL: ${GCLOUD_HOSTED_LOGS_URL}
+    
+    # Fleet Management
+    GCLOUD_FM_URL: ${GCLOUD_FM_URL}
+    GCLOUD_FM_POLL_FREQUENCY: ${GCLOUD_FM_POLL_FREQUENCY}
+    GCLOUD_FM_HOSTED_ID: ${GCLOUD_FM_HOSTED_ID}
+    
+    # API Key
+    GCLOUD_RW_API_KEY: ${GCLOUD_RW_API_KEY}
+    
+    # Backwards compatibility
+    GRAFANA_CLOUD_URL: ${GCLOUD_HOSTED_METRICS_URL}
+    GRAFANA_CLOUD_USERNAME: ${GCLOUD_HOSTED_METRICS_ID}
+    GRAFANA_CLOUD_PASSWORD: ${GCLOUD_RW_API_KEY}
+  depends_on:
+    - node-exporter
+    - cadvisor
+    - postgres-exporter
+    - redis-exporter
+  networks:
+    - bizai-network
+  healthcheck:
+    test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:12345/ready"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 60s

@@ -1,0 +1,364 @@
+# infra/docker/docker-compose.dev.yml
+version: '3.8'
+
+x-common: &common
+  networks:
+    - bizai-network-dev
+  restart: unless-stopped
+
+services:
+  # PostgreSQL Database Development
+  postgres:
+    image: postgres:16-alpine
+    container_name: bizai-postgres-dev
+    environment:
+      POSTGRES_USER: bizai_admin
+      POSTGRES_PASSWORD: dev_password_123
+      POSTGRES_DB: bizai_development
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
+      TZ: Asia/Dubai
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./postgres/init-dev:/docker-entrypoint-initdb.d:ro
+      - ./postgres/conf/postgresql-dev.conf:/etc/postgresql/postgresql.conf:ro
+    command: >
+      postgres 
+      -c config_file=/etc/postgresql/postgresql.conf
+      -c shared_preload_libraries=pg_stat_statements
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bizai_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+  # Redis Cache Development
+  redis:
+    image: redis:7-alpine
+    container_name: bizai-redis-dev
+    environment:
+      REDIS_PASSWORD: dev_redis_123
+      REDIS_PORT: 6379
+    command: >
+      redis-server 
+      --requirepass dev_redis_123
+      --appendonly no  # Disable in dev for performance
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "dev_redis_123", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    <<: *common
+
+  # Next.js Web Application Development
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile
+      target: development
+    container_name: bizai-web-dev
+    environment:
+      # Application
+      NODE_ENV: development
+      PORT: 3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      
+      # Database
+      DATABASE_URL: postgresql://bizai_admin:dev_password_123@postgres:5432/bizai_development
+      DIRECT_URL: postgresql://bizai_admin:dev_password_123@postgres:5432/bizai_development
+      
+      # Redis
+      REDIS_URL: rediss://default:ATiXAAIncDEyZjE2YjhmY2FlOGY0ZjA2OTBhMTQyZWVkYzI3MmU4YnAxMTQ0ODc@measured-cricket-14487.upstash.io:6379
+      
+      # Security (dev values)
+      JWT_SECRET: ""
+      ENCRYPTION_KEY: ""
+      SESSION_SECRET: ""
+      
+      # AI Services (dev/test keys)
+      GROQ_API_KEY: ${GROQ_API_KEY:-test_groq_key}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-test_gemini_key}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-test_openai_key}
+      
+      # Inngest
+      INNGEST_EVENT_KEY: ""
+      INNGEST_SIGNING_KEY: ""
+      INNGEST_DEV_URL: http://inngest:8288
+      
+      # External Services (dev)
+      CLOUDINARY_URL: ${CLOUDINARY_URL:-cloudinary://test:test@test}
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_BUCKET: bizai-dev
+      
+      # Email (MailHog)
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_USER: 
+      SMTP_PASSWORD: 
+      EMAIL_FROM: dev@bizai.com
+      
+      # Logging
+      LOG_LEVEL: debug
+      NEXT_TELEMETRY_DISABLED: 1
+    ports:
+      - "3000:3000"
+      - "9229:9229"  # Node.js debug port
+    volumes:
+      - ../../apps/web:/app
+      - /app/node_modules
+      - /app/.next
+      - ../../packages/shared:/packages/shared
+    command: >
+      sh -c "
+        echo 'Waiting for dependencies...' &&
+        sleep 5 &&
+        npx prisma db push --accept-data-loss &&
+        npm run dev
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
+    <<: *common
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web-dev.rule=Host(`localhost`)"
+      - "traefik.http.services.web-dev.loadbalancer.server.port=3000"
+
+  # AI Worker Development
+  ai-worker:
+    build:
+      context: ../../apps/ai-worker
+      dockerfile: Dockerfile
+      target: development
+    container_name: bizai-ai-worker-dev
+    environment:
+      NODE_ENV: development
+      PORT: 3001
+      
+      # Database
+      DATABASE_URL: postgresql://bizai_admin:dev_password_123@postgres:5432/bizai_development
+      
+      # Redis
+      REDIS_URL: redis://:dev_redis_123@redis:6379
+      
+      # Security
+      JWT_SECRET: dev_jwt_secret_1234567890
+      ENCRYPTION_KEY: dev_encryption_key_1234567890
+      
+      # AI Services
+      GROQ_API_KEY: ${GROQ_API_KEY:-test_groq_key}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-test_gemini_key}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-test_openai_key}
+      
+      # Inngest
+      INNGEST_EVENT_KEY: dev_inngest_event_key
+      INNGEST_SIGNING_KEY: dev_inngest_signing_key
+      INNGEST_BASE_URL: http://inngest:8288
+      
+      # Logging
+      LOG_LEVEL: debug
+    ports:
+      - "3001:3001"
+      - "9230:9230"  # Debug port
+    volumes:
+      - ../../apps/ai-worker:/app
+      - /app/node_modules
+      - ../../packages/shared:/packages/shared
+    command: >
+      sh -c "
+        echo 'Waiting for dependencies...' &&
+        sleep 10 &&
+        npm run dev
+      "
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      inngest:
+        condition: service_started
+    <<: *common
+
+  # Inngest Dev Server
+  inngest:
+    image: inngest/inngest:latest
+    container_name: bizai-inngest-dev
+    environment:
+      INNGEST_EVENT_KEY: dev_inngest_event_key
+      INNGEST_SIGNING_KEY: dev_inngest_signing_key
+      INNGEST_ENV: development
+      INNGEST_LOG_LEVEL: debug
+    ports:
+      - "8288:8288"
+    volumes:
+      - ../../apps/ai-worker/src/functions:/functions
+      - ../../apps/web/lib/inngest/functions:/web-functions
+    command: >
+      dev
+      --port 8288
+      --no-discovery
+      --sync
+      --functions-dir /functions
+      --web-functions-dir /web-functions
+    <<: *common
+
+  # MailHog - Email Testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: bizai-mailhog-dev
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    <<: *common
+
+  # MinIO - S3 Compatible Storage (for dev)
+  minio:
+    image: minio/minio:latest
+    container_name: bizai-minio-dev
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_DEFAULT_BUCKETS: bizai-dev,bizai-uploads,bizai-temp
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Console
+    volumes:
+      - minio_data_dev:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    <<: *common
+
+  # MinIO Client (for bucket setup)
+  minio-client:
+    image: minio/mc:latest
+    container_name: bizai-minio-client-dev
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10 &&
+      /usr/bin/mc alias set local http://minio:9000 minioadmin minioadmin &&
+      /usr/bin/mc mb local/bizai-dev --ignore-existing &&
+      /usr/bin/mc mb local/bizai-uploads --ignore-existing &&
+      /usr/bin/mc mb local/bizai-temp --ignore-existing &&
+      /usr/bin/mc policy set public local/bizai-temp &&
+      echo 'MinIO buckets created successfully' &&
+      tail -f /dev/null
+      "
+    <<: *common
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: bizai-nginx-dev
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../../apps/web/public:/usr/share/nginx/html/static:ro
+    depends_on:
+      - web
+    <<: *common
+
+  # pgAdmin - Database GUI
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: bizai-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bizai.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data_dev:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    <<: *common
+
+  # Adminer - Lightweight Database GUI
+  adminer:
+    image: adminer:latest
+    container_name: bizai-adminer-dev
+    ports:
+      - "8081:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    <<: *common
+
+  # Redis Commander - Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: bizai-redis-commander-dev
+    environment:
+      REDIS_HOSTS: local:redis:6379:dev
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: dev_redis_123
+      HTTP_USER: admin
+      HTTP_PASSWORD: admin123
+    ports:
+      - "8082:8081"
+    depends_on:
+      - redis
+    <<: *common
+
+  # Traefik - Reverse Proxy with automatic SSL (Optional)
+  traefik:
+    image: traefik:v3.0
+    container_name: bizai-traefik-dev
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=admin@bizai.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8088:8080"  # Dashboard
+    volumes:
+      - traefik_data_dev:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    <<: *common
+
+volumes:
+  postgres_data_dev:
+    driver: local
+  redis_data_dev:
+    driver: local
+  minio_data_dev:
+    driver: local
+  pgadmin_data_dev:
+    driver: local
+  traefik_data_dev:
+    driver: local
+
+networks:
+  bizai-network-dev:
+    driver: bridge
+    name: bizai-network-dev
