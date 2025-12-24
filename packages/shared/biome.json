@@ -1,0 +1,26 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.7.3/schema.json",
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
+      },
+      "suspicious": {
+        "noExplicitAny": "warn"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    }
+  },
+  "files": {
+    "ignore": ["node_modules", "dist", ".next", "coverage"]
+  }
+}

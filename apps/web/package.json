@@ -10,8 +10,8 @@
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "start:prod": "NODE_ENV=production next start",
-    "lint": "next lint",
-    "lint:fix": "next lint --fix",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
     "type-check": "tsc --noEmit --incremental",
     "type-check:watch": "tsc --noEmit --watch --preserveWatchOutput",
     "clean": "turbo clean && rm -rf .next .turbo node_modules/.cache",
@@ -20,71 +20,69 @@
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage",
     "postinstall": "echo '✅ @bizai/web dependencies installed'",
-    "ona:audit": "ona run automation security-audit-ai --scope @bizai/web",
-    "ona:optimize": "ona run automation turbo-performance-ai --scope @bizai/web",
     "vercel:deploy": "vercel --prod",
     "vercel:preview": "vercel",
     "vercel:env": "vercel env pull .env.local",
-    "ignoreCommand": "cd ../../ && npm install --legacy-peer-deps",
-    "gitpod:setup": "bash ../../scripts/setup-basic.sh"
+    "ignoreCommand": "cd ../../ && npm install --legacy-peer-deps"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.44.0",
+    "@bizai/shared": "file:../../packages/shared",
     "@cloudinary/react": "1.14.3",
     "@cloudinary/url-gen": "1.22.0",
+    "@supabase/supabase-js": "^2.44.0",
+    "atob": "2.1.2",
     "autoprefixer": "^10.4.20",
+    "btoa": "1.2.1",
     "exceljs": "^4.4.0",
     "framer-motion": "^11.0.0",
+    "husky": "^9.1.7",
+    "is-deep-strict-equal-x": "1.1.2",
     "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.344.0",
+    "lru-cache": "11.2.4",
+    "lucide-react": "^0.562.0",
     "next": "15.5.9",
     "next-auth": "^4.24.7",
     "next-cloudinary": "6.17.5",
     "postcss": "^8.4.41",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^3.4.0",
-    "zod": "^3.22.4",
-    "atob": "2.1.2",
-    "btoa": "1.2.1",
-    "lru-cache": "11.2.4",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
     "rimraf": "6.1.2",
-    "husky": "9.1.7",
-    "is-deep-strict-equal-x": "1.1.2",
-    "@bizai/shared": "file:../../packages/shared"
+    "tailwindcss": "^3.4.0",
+    "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0",
-    "@svgr/plugin-svgo": "^8.1.0",
+    "@next/eslint-plugin-next": "16.1.1",
     "@svgr/plugin-jsx": "^8.1.0",
-    "@types/jsonwebtoken": "^9.0.5",
-    "@types/node": "^22.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "@vercel/analytics": "^1.2.2",
-    "@vercel/speed-insights": "^1.0.12",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "15.5.9",
-    "eslint-config-turbo": "^2.0.0",
-    "typescript": "^5.0.0",
+    "@svgr/plugin-svgo": "^8.1.0",
+    "@svgr/webpack": "^8.1.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.1",
+    "@types/domexception": "4.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "@testing-library/react": "^15.0.0",
-    "@testing-library/jest-dom": "^6.4.2",
-    "@types/domexception": "4.0.3",
-    "eslint-plugin-jest": "^28.0.0",
-    "eslint-plugin-testing-library": "^6.0.0"
+    "@vercel/analytics": "^1.2.2",
+    "@vercel/speed-insights": "^1.0.12",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "16.1.1",
+    "eslint-config-turbo": "^2.7.2",
+    "eslint-plugin-jest": "^29.11.0",
+    "eslint-plugin-testing-library": "^6.0.0",
+    "jest": "^30.2.0",
+    "jest-environment-jsdom": "^30.2.0",
+    "typescript": "^5.0.0"
   },
   "peerDependencies": {
-    "turbo": "^2.0.0"
+    "turbo": "^2.7.2"
   },
   "engines": {
-    "node": ">=20.0.0",
-    "npm": ">=10.0.0"
+    "node": ">=22.0.0",
+    "npm": ">=11.7.0"
   },
-  "packageManager": "npm@10.0.0",
+  "packageManager": "npm@11.7.0",
   "browserslist": {
     "production": [
       ">0.2%",
@@ -100,46 +98,43 @@
   "turbo": {
     "pipeline": {
       "dev": {
-        "dependsOn": ["^build"],
+        "dependsOn": [
+          "^build"
+        ],
         "cache": false,
         "persistent": true
       },
       "build": {
-        "dependsOn": ["^build", "@bizai/shared#build"],
-        "outputs": [".next/**", "dist/**"]
+        "dependsOn": [
+          "^build",
+          "@bizai/shared#build"
+        ],
+        "outputs": [
+          ".next/**",
+          "dist/**"
+        ]
       },
       "lint": {
         "outputs": []
       },
       "test": {
-        "dependsOn": ["^build"],
-        "outputs": ["coverage/**"]
+        "dependsOn": [
+          "^build"
+        ],
+        "outputs": [
+          "coverage/**"
+        ]
       },
       "type-check": {
-        "dependsOn": ["^type-check"],
+        "dependsOn": [
+          "^type-check"
+        ],
         "outputs": []
       },
       "clean": {
         "cache": false
       }
     }
-  },
-  "ona": {
-    "automations": ["security-audit-ai", "turbo-performance-ai"],
-    "environment": "nextjs-15-turbopack",
-    "cache": {
-      "enabled": true,
-      "strategy": "turbopack-optimized"
-    }
-  },
-  "gitpod": {
-    "ports": [3000],
-    "tasks": ["dev"],
-    "vscodeExtensions": [
-      "turbopack.build.turbopack-vscode",
-      "bradlc.vscode-tailwindcss",
-      "dbaeumer.vscode-eslint"
-    ]
   },
   "vercel": {
     "buildCommand": "npm run build",
@@ -180,7 +175,7 @@
   "types": "dist/index.d.ts",
   "resolutions": {
     "next": "15.5.9",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3"
   }
 }

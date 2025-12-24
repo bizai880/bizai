@@ -12,7 +12,10 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@bizai/uploader": ["../web/lib/storage/uploader"]}
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
