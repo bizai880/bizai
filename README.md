@@ -558,5 +558,6 @@ This project is authorised under the MIT license. SEE THE `LICENSE` FILE FOR MOR
 
 ## 👥 Communication
 
+
 * **Supervisor:** Bizai Team
 * **Project link:** https://github.com/bizai183/bizai.git
