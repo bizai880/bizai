@@ -4,8 +4,8 @@
     "enabled": false
   },
   "files": {
-    "ignore": ["node_modules", "dist", "coverage", "*.log", "**/*.test.*", "**/*.spec.*"],
-    "include": ["**/*.{js,jsx,ts,tsx,json}"],
+    "includes": ["**/*.{js,jsx,ts,tsx,json}"],
+    "ignoreUnknown": ["node_modules", "dist", "coverage", "*.log", "**/*.test.*", "**/*.spec.*"],
     "ignoreUnknown": false
   },
   "formatter": {
