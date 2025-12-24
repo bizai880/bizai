@@ -5,7 +5,7 @@
     "clientKind": "git"
   },
   "files": {
-    "includes": ["**/*.{js,jsx,ts,tsx,json,css,md}"],
+    "include": ["**/*.{js,jsx,ts,tsx,json,css,md}"],
     "ignore": [
       "node_modules",
       ".next",
