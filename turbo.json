@@ -29,7 +29,6 @@
     "GOOGLE_*"
   ],
   "pipeline": {
-    // ============== التطبيقات الرئيسية ==============
     "@bizai/web#build": {
       "dependsOn": [
         "@bizai/shared#build",
@@ -70,7 +69,6 @@
       "cache": false
     },
 
-    // ============== ModelHub ==============
     "@bizai/modelhub#build": {
       "dependsOn": ["@bizai/shared#build"],
       "outputs": [
@@ -107,7 +105,6 @@
       "cache": false
     },
 
-    // ============== AI Worker ==============
     "@bizai/ai-worker#build": {
       "dependsOn": ["@bizai/shared#build"],
       "outputs": [
@@ -133,7 +130,6 @@
       "env": ["NODE_ENV"]
     },
 
-    // ============== الحزم المشتركة ==============
     "@bizai/shared#build": {
       "outputs": [
         "dist/**",
@@ -173,7 +169,6 @@
       "env": ["DATABASE_URL"]
     },
 
-    // ============== المهام المشتركة ==============
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "build/**", ".next/**"],
@@ -234,7 +229,6 @@
       "cache": false
     },
 
-    // ============== التبعيات والتحقق ==============
     "install": {
       "cache": false
     },
@@ -265,7 +259,6 @@
       "cache": true
     },
 
-    // ============== قاعدة البيانات والبنية التحتية ==============
     "db:reset": {
       "cache": false,
       "env": ["DATABASE_URL"]
@@ -294,7 +287,6 @@
       "cache": false
     },
 
-    // ============== النشر والتحليل ==============
     "analyze": {
       "dependsOn": ["@bizai/web#build"],
       "cache": false
@@ -314,7 +306,6 @@
       "cache": false
     },
 
-    // ============== التطوير المخصص ==============
     "generate": {
       "cache": false
     },
