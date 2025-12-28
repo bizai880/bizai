@@ -17,6 +17,35 @@ import { Cloudinary } from '@cloudinary/url-gen';
 import { auto } from '@cloudinary/url-gen/actions/resize';
 import { autoGravity } from '@cloudinary/url-gen/qualifiers/gravity';
 import { AdvancedImage } from '@cloudinary/react';
+import { AIOrchestrator } from '@/lib/ai/orchestrator';
+
+const orchestrator = new AIOrchestrator();
+
+// بناء نظام باستخدام المكعبات
+const system = await orchestrator.orchestrateCubes({
+  description: "أريد نظام متابعة موظفين مع كشف الوجه وتحليل الإنتاجية",
+  systemType: "employee_tracking",
+  options: {
+    useCache: true,
+    priority: 'high'
+  }
+});
+
+if (system.success) {
+  console.log('✅ النظام تم بناؤه بنجاح');
+  console.log('المكعبات المستخدمة:', system.cubesUsed);
+  console.log('وقت التنفيذ:', system.totalExecutionTime);
+  console.log('الاقتراحات:', system.suggestions);
+  
+  // حفظ النظام في قاعدة البيانات
+  await saveSystemToDatabase(system.system);
+  
+  // توليد Excel
+  const excelResult = await generateExcel(system.system);
+  
+  // إظهار النتيجة للمستخدم
+  showResultToUser(excelResult);
+}
 
 const App = () => {
   const cld = new Cloudinary({ cloud: { cloudName: 'dsdwgrcyf' } });
