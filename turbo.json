@@ -5,7 +5,20 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
       "env": ["NODE_ENV", "NEXT_PUBLIC_*"],
-      "cache": true
+      "cache": true,
+      {
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "@bizai/modelhub#build": {
+      "dependsOn": ["@bizai/shared#build"],
+      "outputs": ["dist/**"]
+    },
+    "@bizai/modelhub#dev": {
+      "cache": false
+    }
+  }
     },
     "dev": {
       "cache": false,
