@@ -1,0 +1,38 @@
+{
+  "name": "@bizai/modelhub",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "test": "vitest run",
+    "lint": "eslint src",
+    "generate": "tsx scripts/generate-cube.ts"
+  },
+  "dependencies": {
+    "@bizai/shared": "workspace:*",
+    "@huggingface/inference": "^2.6.2",
+    "openai": "^4.28.0",
+    "@google/generative-ai": "^0.1.0",
+    "@azure/cognitiveservices-face": "^5.0.0",
+    "tensorflow": "^4.10.0",
+    "@tensorflow/tfjs-node": "^4.10.0",
+    "sharp": "^0.33.1",
+    "jimp": "^0.22.10",
+    "pdf-parse": "^1.1.1",
+    "exceljs": "^4.4.0",
+    "redis": "^4.6.11",
+    "bullmq": "^4.12.1",
+    "zod": "^3.22.4",
+    "fastify": "^4.24.3",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/rate-limit": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3",
+    "tsup": "^7.2.0",
+    "tsx": "^4.7.0",
+    "vitest": "^1.1.0"
+  }
+}
