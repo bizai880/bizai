@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  modelhub:
+    build:
+      context: ./apps/modelhub
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/modelhub
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./apps/modelhub/public/models:/app/public/models
+  
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+  
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: modelhub
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
