@@ -4,7 +4,50 @@ import { GeminiProvider } from './providers/gemini';
 import { LocalAIProvider } from './providers/local';
 import { HuggingFaceProvider } from './providers/huggingface';
 import { ModelHubClient } from './providers/modelhub';
+import { SalesOutlookAutomationCube } from '@bizai/modelhub';
 
+async function runSalesAutomation() {
+  const cube = new SalesOutlookAutomationCube();
+  await cube.initialize();
+  
+  const input = {
+    excelFile: '/path/to/Advanced Sales Admin Tracker.xlsx',
+    emailConfig: {
+      senderEmail: process.env.SALES_EMAIL,
+      senderName: 'Sales Automation System',
+      smtpServer: process.env.SMTP_SERVER,
+      smtpPort: parseInt(process.env.SMTP_PORT || '587'),
+      smtpUsername: process.env.SMTP_USERNAME,
+      smtpPassword: process.env.SMTP_PASSWORD,
+      useSSL: true
+    },
+    recipients: {
+      salesAdmin: 'sales.admin@company.com',
+      salesEngineer: 'sales.engineer@company.com',
+      manager: 'sales.manager@company.com',
+      salesTeam: [
+        'team1@company.com',
+        'team2@company.com',
+        'team3@company.com'
+      ]
+    },
+    options: {
+      checkInterval: 'daily',
+      workingDays: [0, 1, 2, 3, 4], // الأحد إلى الخميس
+      timezone: 'Asia/Riyadh'
+    }
+  };
+  
+  const result = await cube.process(input);
+  
+  if (result.success) {
+    console.log(`✅ Sent ${result.alertsSent} alerts successfully`);
+    console.log('Summary:', result.summary);
+    console.log('Next check:', result.nextCheck);
+  } else {
+    console.error('❌ Automation failed:', result.error);
+  };
+}
 // أنواع جديدة للمكعبات
 export interface CubeOrchestrationRequest {
   description: string;
