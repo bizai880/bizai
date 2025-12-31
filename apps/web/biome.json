@@ -1,0 +1,31 @@
+{
+  "extends": ["../../biome.json"],
+  "files": {
+    "ignore": [
+      ".next",
+      "node_modules",
+      "public",
+      "*.d.ts"
+    ]
+  },
+  "overrides": [
+    {
+      "include": ["**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    },
+    {
+      "include": ["app/**/*.{ts,tsx}"],
+      "javascript": {
+        "formatter": {
+          "trailingComma": "all"
+        }
+      }
+    }
+  ]
+}
