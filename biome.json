@@ -1,74 +1,38 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.10/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git"
+  "$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
+  "organizeImports": {
+    "enabled": true
   },
-  "files": {
-    "includes": ["**/*.{js,jsx,ts,tsx,json,css,md}"],
-    "ignoreUnknown": [
-      "node_modules",
-      ".next",
-      "dist",
-      "build",
-      "coverage",
-      "*.log",
-      ".turbo",
-      ".vercel",
-      ".github",
-      "public",
-      "*.md",
-      "*.sql",
-      "*.lock",
-      "Dockerfile*",
-      "docker-compose*",
-      "**/node_modules",
-      "**/.next",
-      "**/dist",
-      "**/build"
-    ],
-    "ignoreUnknown": false
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    }
   },
   "formatter": {
     "enabled": true,
-    "formatWithErrors": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100,
     "lineEnding": "lf"
   },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error"
-      },
-      "style": {
-        "noNonNullAssertion": "warn",
-        "useConst": "error"
-      },
-      "suspicious": {
-        "noExplicitAny": "warn",
-        "noConsole": "off"
-      }
-    }
-  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingCommas": "es5",
-      "semicolons": "always",
-      "quoteProperties": "asNeeded"
+      "trailingComma": "es5",
+      "semicolons": "always"
     }
   },
-  "json": {
-    "formatter": {
-      "trailingCommas": "none"
-    },
-    "parser": {
-      "allowComments": true
-    }
+  "files": {
+    "include": ["**/*.{js,jsx,ts,tsx,json,css,md}"],
+    "ignore": [
+      "node_modules",
+      "dist",
+      "build",
+      ".next",
+      ".turbo",
+      "coverage"
+    ],
+    "ignoreUnknown": false
   }
 }
