@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/node": "^20.10.5",
     "@types/redis": "^4.0.11",
-    "@types/bullmq": "^4.8.1",
+    "bullmq": "^5.66.4",
     "typescript": "^5.3.3",
     "tsup": "^7.2.0",
     "tsx": "^4.7.0",
