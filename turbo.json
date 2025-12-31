@@ -28,7 +28,7 @@
     "AZURE_*",
     "GOOGLE_*"
   ],
-  "pipeline": {
+  "tasks": {
     "@bizai/web#build": {
       "dependsOn": [
         "@bizai/shared#build",
