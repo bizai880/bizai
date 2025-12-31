@@ -10,7 +10,7 @@
     "generate": "tsx scripts/generate-cube.ts"
   },
   "dependencies": {
-    "@bizai/shared": "workspace:*",
+    "@bizai/shared": "file:../../packages/shared",
     "@huggingface/inference": "^2.6.2",
     "openai": "^4.28.0",
     "@google/generative-ai": "^0.1.0",
