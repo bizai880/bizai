@@ -2,9 +2,11 @@
   "name": "@bizai/modelhub",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsup",
+    "start": "node dist/index.js",
     "test": "vitest run",
     "lint": "eslint src",
     "generate": "tsx scripts/generate-cube.ts"
@@ -15,8 +17,6 @@
     "openai": "^4.28.0",
     "@google/generative-ai": "^0.1.0",
     "@azure/cognitiveservices-face": "^5.0.0",
-    "tensorflow": "^4.10.0",
-    "@tensorflow/tfjs-node": "^4.10.0",
     "sharp": "^0.33.1",
     "jimp": "^0.22.10",
     "pdf-parse": "^1.1.1",
@@ -34,14 +34,5 @@
     "tsup": "^7.2.0",
     "tsx": "^4.7.0",
     "vitest": "^1.1.0"
-  },
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  }
 }
