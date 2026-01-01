@@ -33,7 +33,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.4",
+    "@biomejs/biome": "^2.3.10",
     "@types/node": "^20.10.5",
     "@types/redis": "^4.0.11",
     "bullmq": "^5.66.4",
