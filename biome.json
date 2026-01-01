@@ -23,7 +23,7 @@
 			"quoteStyle": "double"
 		}
 	},
-	"assists": {
+	"assist": {
 		"enabled": true,
 		"actions": {
 			"source": {
