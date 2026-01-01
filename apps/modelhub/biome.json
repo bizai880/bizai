@@ -1,9 +1,0 @@
-{
-  "extends": ["../../biome.json"],
-  "formatter": {
-    "lineWidth": 120
-  },
-  "files": {
-    "ignore": ["dist", "node_modules", "*.test.ts"]
-  }
-}
