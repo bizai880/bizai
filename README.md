@@ -10,7 +10,7 @@
 [![Javascript](https://img.shields.io/badge/Javascript-EFD81D?style=for-the-badge&logo=javascript&logoColor=white)](https://www.javascript.com)
 [![Typescript](https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![Turborepo](https://img.shields.io/badge/Turborepo-000000?style=for-the-badge&logo=turborepo&logoColor=white)](https://turborepo.com)
-[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=ffffff)]
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=ffffff)](https://vercel.com)
 
 </div>
 
