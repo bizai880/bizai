@@ -56,11 +56,6 @@
     "docker:prod": "docker-compose -f infra/docker/docker-compose.prod.yml up -d",
     "docker:down": "docker-compose -f docker-compose.dev.yml down",
     "docker:modelhub": "cd apps/modelhub && npm run docker:build",
-    "gitpod:setup": "bash scripts/setup-basic.sh",
-    "gitpod:open": "gp open preview",
-    "ona:audit": "ona run automation security-audit-ai",
-    "ona:fix": "ona run automation turbo-fix-ai",
-    "ona:optimize": "ona run automation turbo-performance-ai",
     "vercel:deploy": "cd apps/web && vercel --prod",
     "vercel:preview": "cd apps/web && vervel",
     "vercel:env": "cd apps/web && vercel env pull .env.local",
@@ -78,12 +73,12 @@
     "packages/*"
   ],
   "dependencies": {
-    "biome": "^0.2.2",
+    "biome": "^0.3.3",
     "ci": "^2.3.0",
     "turbo": "^2.7.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.4",
+    "@biomejs/biome": "^2.3.10",
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
@@ -241,7 +236,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "prettier": "^3.3.3",
-    "@biomejs/biome": "^1.6.4"
+    "@biomejs/biome": "^2.3.10"
   },
   "biome": {
     "extends": "./biome.json"
