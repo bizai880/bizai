@@ -11,49 +11,39 @@
     "dev:turbopack": "turbo dev --filter=./apps/web -- --turbopack",
     "dev:modelhub": "turbo dev --filter=./apps/modelhub",
     "dev:all": "turbo dev --filter=./apps/web --filter=./apps/ai-worker --filter=./apps/modelhub",
-    
     "build": "turbo build",
     "build:web": "turbo build --filter=./apps/web",
     "build:ai-worker": "turbo build --filter=./apps/ai-worker",
     "build:modelhub": "turbo build --filter=./apps/modelhub",
     "build:shared": "turbo build --filter=./packages/shared",
     "build:prod": "turbo build --mode=production",
-    
     "start": "turbo start --filter=./apps/web",
     "start:prod": "NODE_ENV=production turbo start --filter=./apps/web",
     "start:modelhub": "turbo start --filter=./apps/modelhub",
-    
     "lint": "biome check .",
     "lint:fix": "biome check --write --unsafe .",
     "lint:staged": "biome check --staged --write",
     "lint:ci": "biome ci .",
     "lint:format": "biome format --write .",
     "lint:organize": "biome check --write --unsafe --organize-imports .",
-    
     "format": "biome format --write .",
     "format:check": "biome format .",
     "format:staged": "biome format --staged --write",
-    
     "check": "biome check .",
     "check:fix": "biome check --write --unsafe .",
     "check:ci": "biome ci .",
     "check:staged": "biome check --staged --write",
-    
     "type-check": "turbo type-check",
     "type-check:watch": "turbo type-check -- --watch",
-    
     "test": "turbo test",
     "test:watch": "turbo test -- --watch",
     "test:ci": "turbo test -- --coverage",
-    
     "clean": "turbo clean && rm -rf node_modules/.cache",
     "clean:all": "turbo clean && rm -rf node_modules apps/*/node_modules packages/*/node_modules",
     "clean:install": "npm run clean:all && npm install",
     "clean:biome": "rm -rf .biome-cache",
-    
     "install:all": "npm install && turbo run install",
     "install:ci": "npm ci --legacy-peer-deps",
-    
     "biome": "biome check .",
     "biome:check": "biome check .",
     "biome:fix": "biome check --write --unsafe .",
@@ -61,33 +51,25 @@
     "biome:ci": "biome ci .",
     "biome:init": "biome init",
     "biome:upgrade": "npm install @biomejs/biome@latest",
-    
     "fix:all": "npm run lint:fix && npm run format",
-    
     "docker:dev": "docker-compose -f docker-compose.dev.yml up -d",
     "docker:prod": "docker-compose -f infra/docker/docker-compose.prod.yml up -d",
     "docker:down": "docker-compose -f docker-compose.dev.yml down",
     "docker:modelhub": "cd apps/modelhub && npm run docker:build",
-    
     "gitpod:setup": "bash scripts/setup-basic.sh",
     "gitpod:open": "gp open preview",
-    
     "ona:audit": "ona run automation security-audit-ai",
     "ona:fix": "ona run automation turbo-fix-ai",
     "ona:optimize": "ona run automation turbo-performance-ai",
-    
     "vercel:deploy": "cd apps/web && vercel --prod",
     "vercel:preview": "cd apps/web && vervel",
     "vercel:env": "cd apps/web && vercel env pull .env.local",
     "vercel:link": "cd apps/web && vercel link",
-    
     "health": "turbo run type-check lint build --dry-run",
     "prepare": "husky install || echo 'Husky not installed'",
     "postinstall": "npm run prepare",
-    
     "cubes:generate": "cd apps/modelhub && npm run generate-cube",
     "cubes:test": "cd apps/modelhub && npm test",
-    
     "precommit": "npm run lint:staged",
     "prepush": "npm run lint && npm run type-check && npm run test"
   },
@@ -101,7 +83,7 @@
     "turbo": "^2.7.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.4",
+    "@biomejs/biome": "1.9.4",
     "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
