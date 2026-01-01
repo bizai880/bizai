@@ -6,14 +6,6 @@
   },
   "files": {
     "includes": ["**/*.{js,jsx,ts,tsx,json,css,md}"],
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".next",
-      ".turbo",
-      "coverage"
-    ],
     "ignoreUnknown": false
   },
   "formatter": {
