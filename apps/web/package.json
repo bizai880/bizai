@@ -36,7 +36,6 @@
     "exceljs": "^4.4.0",
     "framer-motion": "^11.0.0",
     "husky": "^9.1.7",
-    "is-deep-strict-equal-x": "1.1.2",
     "jsonwebtoken": "^9.0.2",
     "lru-cache": "11.2.4",
     "lucide-react": "^0.562.0",
