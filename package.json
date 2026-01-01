@@ -171,9 +171,9 @@
     },
     "environment": {
       "nodeVersion": "22",
-      "turboVersion": "2.7.1",
+      "turboVersion": "2.7.2",
       "cacheStrategy": "distributed",
-      "biomeVersion": "1.6.4"
+      "biomeVersion": "2.3.10"
     }
   },
   "vercel": {
@@ -226,7 +226,7 @@
     "*.md"
   ],
   "resolutions": {
-    "turbo": "^2.7.1",
+    "turbo": "^2.7.2",
     "next": "15.5.9",
     "react": "^19.2.7",
     "react-dom": "^19.2.3",
