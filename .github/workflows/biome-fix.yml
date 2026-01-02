@@ -34,7 +34,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           if [ -f "package.json" ]; then
-            npm ci --legacy-peer-deps
+            npm install --legacy-peer-deps
           else
             echo "No package.json found, skipping npm install"
           fi
