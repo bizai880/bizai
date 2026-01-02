@@ -1,7 +1,7 @@
-export const Check = (props: any) => <span>✓</span>;
-export const X = (props: any) => <span>✗</span>;
-export const ArrowRight = (props: any) => <span>→</span>;
-export const Star = (props: any) => <span>★</span>;
+export const Check = (props: any) => <span>{'\u2713'}</span>;
+export const X = (props: any) => <span>{'\u2717'}</span>;
+export const ArrowRight = (props: any) => <span>{'\u2192'}</span>;
+export const Star = (props: any) => <span>{'\u2605'}</span>;
 export const Zap = (props: any) => <span>⚡</span>;
 export const Users = (props: any) => <span>👥</span>;
 export const Shield = (props: any) => <span>🛡️</span>;
