@@ -30,3 +30,4 @@ describe('sanitizeInput', () => {
  
     expect(result.length).toBe(1000);
   });
+});
