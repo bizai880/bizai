@@ -13,7 +13,7 @@
 	"css": {
 		"parser": {
 			"cssModules": true,
-			"tailwind": true
+			"tailwindDirectives": true
 		}
 	}
 }
