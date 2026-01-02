@@ -68,7 +68,7 @@ jobs:
           echo "Applying auto-fixes..."
           
           # 1. تنظيم الواردات أولاً
-          biome check --write --organize-imports-enabled=true . || true
+          biome check --write . || true
           
           # 2. تطبيق جميع الإصلاحات الآمنة
           biome check --write . || true
