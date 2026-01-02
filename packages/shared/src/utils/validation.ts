@@ -26,7 +26,7 @@ export function sanitizeInput(input: string): string {
 		.substring(0, 1000); // Limit length
 }
 
-export function validateObject<T>(
+export function validateObject<_T>(
 	obj: any,
 	schema: Record<string, (value: any) => boolean>,
 ): { valid: boolean; errors: string[] } {
