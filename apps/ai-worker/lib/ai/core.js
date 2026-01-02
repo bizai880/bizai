@@ -52,9 +52,9 @@ var __generator =
 		return (
 			(g.next = verb(0)),
 			(g.throw = verb(1)),
-			(g["return"] = verb(2)),
+			(g.return = verb(2)),
 			typeof Symbol === "function" &&
-				(g[Symbol.iterator] = function () {
+				(g.Symbol.iterator = function () {
 					return this;
 				}),
 			g
