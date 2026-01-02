@@ -6,32 +6,29 @@ const nextConfig = {
   
   // Turbopack configuration
   experimental: {
-  turbopack: {
-    resolveAlias: {
-      '@bizai/shared': '../../packages/shared/src',
-      '@': './app',
-      '@/components': './components',
-      '@/lib': './lib',
-      '@/hooks': './hooks',
-      '@/types': './types',
+    turbopack: {
+      resolveAlias: {
+        '@bizai/shared': '../../packages/shared/src',
+        '@': './app',
+        '@/components': './components',
+        '@/lib': './lib',
+        '@/hooks': './hooks',
+        '@/types': './types',
+      },
+      memoryLimit: 8192, // 8GB for large projects
     },
-    memoryLimit: 8192, // 8GB for large projects
-  },
-  turbo: {
-    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
-    moduleIdStrategy: 'deterministic',
-  }
+    turbo: {
+      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+      moduleIdStrategy: 'deterministic',
     },
-    serverExternalPackages: ['@supabase/supabase-js', 'exceljs']
+    serverExternalPackages: ['@supabase/supabase-js', 'exceljs'],
+    optimizePackageImports: [
+      'lucide-react',      // Tree-shake icons
+      'framer-motion',     // Only import used features
+      '@supabase/supabase-js',
+    ],
+    ppr: 'incremental',
   },
-  optimizePackageImports: [
-    'lucide-react',      // Tree-shake icons
-    'framer-motion',     // Only import used features
-    '@supabase/supabase-js',
-  ],
-},
-  ppr: 'incremental',
-}
   
   // SVGR Webpack configuration
   webpack(config) {
@@ -99,4 +96,4 @@ const nextConfig = {
   }
 }
 
-export default nextConfig;
+module.exports = nextConfig
