@@ -23,6 +23,6 @@ export function verifyToken(token: string, _secret: string): TokenPayload {
 	};
 }
 
-export function generateToken(payload: TokenPayload, _secret: string): string {
+export function generateToken(_payload: TokenPayload, _secret: string): string {
 	return `mock-token-${Date.now()}`;
 }
