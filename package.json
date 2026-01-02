@@ -21,7 +21,7 @@
 		"start:prod": "NODE_ENV=production turbo start --filter=./apps/web",
 		"start:modelhub": "turbo start --filter=./apps/modelhub",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint --apply .",
+		"lint:fix": "biome lint --write .",
 		"lint:staged": "biome check --staged --write",
 		"lint:ci": "biome ci .",
 		"lint:format": "biome format --write .",
