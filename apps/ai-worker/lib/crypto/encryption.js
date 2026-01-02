@@ -3,7 +3,7 @@ exports.verifyToken = verifyToken;
 exports.generateToken = generateToken;
 function verifyToken(token, secret) {
 	// تنفيذ مبسط للتحقق من التوكن
-	console.log("Verifying token with secret:", secret.substring(0, 10) + "...");
+	console.log("Verifying token with secret:", `${secret.substring(0, 10)}...`);
 	// محاكاة التحقق من التوكن
 	if (token === "invalid-token") {
 		throw new Error("Invalid token");
