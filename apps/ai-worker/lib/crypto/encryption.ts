@@ -6,7 +6,7 @@ export interface TokenPayload {
 	iat?: number;
 }
 
-export function verifyToken(token: string, secret: string): TokenPayload {
+export function verifyToken(token: string, _secret: string): TokenPayload {
 	console.log("Verifying token...");
 
 	// Simple mock implementation
@@ -23,6 +23,6 @@ export function verifyToken(token: string, secret: string): TokenPayload {
 	};
 }
 
-export function generateToken(payload: TokenPayload, secret: string): string {
+export function generateToken(payload: TokenPayload, _secret: string): string {
 	return `mock-token-${Date.now()}`;
 }
