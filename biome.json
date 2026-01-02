@@ -9,5 +9,11 @@
 		"rules": {
 			"recommended": true
 		}
+	},
+	"css": {
+		"parser": {
+			"cssModules": true,
+			"tailwind": true
+		}
 	}
 }
