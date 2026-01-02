@@ -1,5 +1,5 @@
+import { generateExcel, logActivity, processDocument, sendNotification } from './functions';
 import { generateDashboard } from './functions/generate-dashboard';
-import { sendNotification, logActivity, generateExcel, processDocument } from './functions';
 
 // Type definitions
 export interface InngestEvent<T = any> {

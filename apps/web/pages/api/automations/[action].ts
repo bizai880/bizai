@@ -10,10 +10,11 @@ export default async function handler(
 			await triggerAutomation(req.body);
 			break;
 
-		case "status":
+		case "status": {
 			const status = await getAutomationStatus();
 			res.json(status);
 			break;
+		}
 
 		case "test":
 			await testAutomationFlow(req.body.flowId);

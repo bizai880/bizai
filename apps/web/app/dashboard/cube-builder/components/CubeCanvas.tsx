@@ -1,37 +1,37 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import ReactFlow, {
-	Node,
-	Edge,
-	Connection,
 	addEdge,
-	ReactFlowInstance,
-	Controls,
 	Background,
-	MiniMap,
-	NodeTypes,
-	Handle,
-	Position,
+	type Connection,
 	ConnectionMode,
+	Controls,
+	type Edge,
+	Handle,
+	MiniMap,
+	type Node,
+	type NodeTypes,
+	Position,
+	type ReactFlowInstance,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
+	Code,
+	Cpu,
+	Database,
+	Download,
+	Eye,
+	Move,
 	Plus,
 	Trash2,
-	Move,
-	Code,
-	Database,
-	Eye,
-	Cpu,
 	Upload,
-	Download,
 } from "lucide-react";
-import { CubeDefinition } from "../actions";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import type { CubeDefinition } from "../actions";
 
 // أنواع العقد المخصصة
 interface CubeNodeData {

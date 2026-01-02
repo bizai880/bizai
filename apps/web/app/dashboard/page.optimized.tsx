@@ -1,7 +1,8 @@
 0;
+
+import dynamic from "next/dynamic";
 // app/dashboard/page.optimized.tsx
 import { Suspense } from "react";
-import dynamic from "next/dynamic";
 
 // Enable Partial Prerendering for this page
 export const experimental_ppr = true;

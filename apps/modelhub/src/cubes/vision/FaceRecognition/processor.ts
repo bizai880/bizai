@@ -1,7 +1,7 @@
-import { BaseCube } from "../../../core/BaseCube";
+import * as tf from "@tensorflow/tfjs-node";
 import { createCanvas, loadImage } from "canvas";
 import * as faceapi from "face-api.js";
-import * as tf from "@tensorflow/tfjs-node";
+import { BaseCube } from "../../../core/BaseCube";
 
 export class FaceRecognitionCube extends BaseCube {
 	private model: any;
@@ -149,7 +149,7 @@ export class FaceRecognitionCube extends BaseCube {
 		// حساب المسافة الإقليدية
 		let sum = 0;
 		for (let i = 0; i < desc1.length; i++) {
-			sum += Math.pow(desc1[i] - desc2[i], 2);
+			sum += (desc1[i] - desc2[i]) ** 2;
 		}
 		return Math.sqrt(sum);
 	}

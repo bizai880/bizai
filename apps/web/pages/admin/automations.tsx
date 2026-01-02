@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Card, Table, Badge, Button } from "@/components/ui";
+import { useEffect, useState } from "react";
+import { Badge, Button, Card, Table } from "@/components/ui";
 
 export default function AutomationsDashboard() {
 	const [automations, setAutomations] = useState([]);

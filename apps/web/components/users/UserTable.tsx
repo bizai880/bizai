@@ -1,20 +1,22 @@
 "use client";
 
 import dynamic from "next/dynamic";
+
 const MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );
+
 import {
-	Mail,
-	Shield,
-	Crown,
-	User,
 	Calendar,
 	CheckCircle,
-	XCircle,
-	MoreVertical,
 	ChevronDown,
+	Crown,
+	Mail,
+	MoreVertical,
+	Shield,
+	User,
+	XCircle,
 } from "lucide-react";
 
 interface User {

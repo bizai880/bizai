@@ -1,14 +1,13 @@
-export { inngest, functions, triggerEvent } from "./inngest";
 export * from "./functions";
-
+export { generateDashboard } from "./functions/generate-dashboard";
+export { generateExcel } from "./functions/generate-excel";
+export { logActivity } from "./functions/log-activity";
 // Re-export specific functions
 export { sendNotification } from "./functions/send-notification";
-export { logActivity } from "./functions/log-activity";
-export { generateExcel } from "./functions/generate-excel";
-export { generateDashboard } from "./functions/generate-dashboard";
+export { functions, inngest, triggerEvent } from "./inngest";
 
 // Default export
-import { inngest, functions, triggerEvent } from "./inngest";
+import { functions, inngest, triggerEvent } from "./inngest";
 export default {
 	inngest,
 	functions,

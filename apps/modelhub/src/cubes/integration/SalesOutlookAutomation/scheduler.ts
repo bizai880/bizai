@@ -1,5 +1,5 @@
-import { AutomationConfig } from "./types";
 import { schedule } from "node-cron";
+import type { AutomationConfig } from "./types";
 
 export async function scheduleAutomation(
 	config: AutomationConfig,

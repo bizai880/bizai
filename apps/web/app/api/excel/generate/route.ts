@@ -1,5 +1,5 @@
 // apps/web/app/api/excel/generate/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { excelGenerator } from "@/lib/excel/generator";
 
 export async function POST(request: NextRequest) {

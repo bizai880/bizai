@@ -1,6 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Code, Eye, Loader2, Play, Plus, Save, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -8,10 +11,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
 	Select,
@@ -21,20 +21,20 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import {
+	type CubeCategory,
+	type CubeDefinition,
+	type CubeInputSchema,
+	type CubeOutputSchema,
+	createCube,
+	deployCube,
+	testCube,
+} from "./actions";
 import { CubeCanvas } from "./components/CubeCanvas";
 import { CubeLibrary } from "./components/CubeLibrary";
 import { CubeProperties } from "./components/CubeProperties";
-import {
-	createCube,
-	testCube,
-	deployCube,
-	type CubeDefinition,
-	type CubeCategory,
-	type CubeInputSchema,
-	type CubeOutputSchema,
-} from "./actions";
-import { Loader2, Plus, Play, Upload, Save, Eye, Code } from "lucide-react";
 
 export default function CubeBuilderPage() {
 	const [activeTab, setActiveTab] = useState("design");

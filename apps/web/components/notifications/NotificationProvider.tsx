@@ -2,14 +2,14 @@
 
 import {
 	createContext,
-	useContext,
-	useState,
-	useEffect,
 	useCallback,
+	useContext,
+	useEffect,
+	useState,
 } from "react";
 import { toast } from "sonner";
-import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/components/auth/AuthProvider";
+import { createClient } from "@/lib/supabase/client";
 
 interface Notification {
 	id: string;

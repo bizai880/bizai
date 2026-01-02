@@ -1,21 +1,21 @@
+import * as nodemailer from "nodemailer";
 import { BaseCube } from "../../../core/BaseCube";
 import {
-	SalesRecord,
-	AlertRule,
-	EmailConfig,
-	AutomationConfig,
-	AlertResult,
-	CubeExecutionResult,
-} from "./types";
-import * as nodemailer from "nodemailer";
-import { parseExcelFile } from "./excel-parser";
-import {
-	generateFollowUpEmail,
 	generateDeliveryAlertEmail,
-	generatePriorityAlertEmail,
 	generateEscalationEmail,
+	generateFollowUpEmail,
+	generatePriorityAlertEmail,
 } from "./email-templates";
+import { parseExcelFile } from "./excel-parser";
 import { scheduleAutomation } from "./scheduler";
+import {
+	type AlertResult,
+	AlertRule,
+	type AutomationConfig,
+	type CubeExecutionResult,
+	type EmailConfig,
+	type SalesRecord,
+} from "./types";
 
 export class SalesOutlookAutomationCube extends BaseCube {
 	private transporter: nodemailer.Transporter | null = null;

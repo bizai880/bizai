@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx";
-import { SalesRecord } from "./types";
+import type { SalesRecord } from "./types";
 
 export async function parseExcelFile(
 	filePathOrData: string,

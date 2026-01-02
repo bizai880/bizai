@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 export const Check: React.FC<any> = (props) => <span>{'\u2713'}</span>;
 export const X: React.FC<any> = (props) => <span>{'\u2717'}</span>;

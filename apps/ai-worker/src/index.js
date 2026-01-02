@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // AI Worker Main File
 console.log("🚀 AI Worker API starting...");
@@ -12,7 +11,7 @@ if (require.main === module) {
 	var PORT_1 = process.env.PORT || 3001;
 	app.use(express.json());
 	app.use("/api", api_1.default.createApiRouter());
-	app.get("/", function (req, res) {
+	app.get("/", (req, res) => {
 		res.json({
 			service: "ai-worker-api",
 			status: "running",
@@ -20,7 +19,7 @@ if (require.main === module) {
 			timestamp: new Date().toISOString(),
 		});
 	});
-	app.listen(PORT_1, function () {
+	app.listen(PORT_1, () => {
 		console.log("\u2705 AI Worker API running on port ".concat(PORT_1));
 		console.log(
 			"\uD83D\uDCE1 Health check: http://localhost:".concat(

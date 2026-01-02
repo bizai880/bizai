@@ -1,4 +1,4 @@
-import { ApiResponse, PaginatedResponse } from "../types/common";
+import type { ApiResponse, PaginatedResponse } from "../types/common";
 
 export function successResponse<T>(
 	data: T,

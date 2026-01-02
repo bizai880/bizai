@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 // Simple notifications API without supabase dependency
 export async function GET(request: NextRequest) {

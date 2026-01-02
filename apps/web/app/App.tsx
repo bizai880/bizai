@@ -1,22 +1,22 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
 import { Toaster } from "sonner";
+import { Analytics } from "@/components/analytics/Analytics";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { ErrorBoundary } from "@/components/error/ErrorBoundary";
+import Footer from "@/components/layout/Footer";
+import MainNav from "@/components/layout/MainNav";
+import { LoadingProvider } from "@/components/loading/LoadingProvider";
 import { NotificationProvider } from "@/components/notifications/NotificationProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { LoadingProvider } from "@/components/loading/LoadingProvider";
-import { ErrorBoundary } from "@/components/error/ErrorBoundary";
-import { Analytics } from "@/components/analytics/Analytics";
-import MainNav from "@/components/layout/MainNav";
-import Footer from "@/components/layout/Footer";
 import "./globals.css";
-import React from "react";
+import { AdvancedImage } from "@cloudinary/react";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { auto } from "@cloudinary/url-gen/actions/resize";
 import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
-import { AdvancedImage } from "@cloudinary/react";
+import type React from "react";
 import { AIOrchestrator } from "@/lib/ai/orchestrator";
 
 const orchestrator = new AIOrchestrator();

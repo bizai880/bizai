@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { encryptionService, verifyToken } from "@/lib/crypto/encryption";
 import { createClient } from "@/lib/supabase/server";
-import { verifyToken, encryptionService } from "@/lib/crypto/encryption";
 
 export async function GET(
 	request: NextRequest,

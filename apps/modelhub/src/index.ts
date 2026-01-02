@@ -1,8 +1,8 @@
 import Fastify from "fastify";
-import { CubeManager } from "./core/manager";
-import { FaceRecognitionCube } from "./cubes/vision/FaceRecognition";
 import cubeRoutes from "./api/routes/cubes";
+import { CubeManager } from "./core/manager";
 import { SalesOutlookAutomationCube } from "./cubes/integration/SalesOutlookAutomation";
+import { FaceRecognitionCube } from "./cubes/vision/FaceRecognition";
 
 async function initializeCubes() {
 	const cubeManager = new CubeManager();

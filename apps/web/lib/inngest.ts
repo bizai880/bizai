@@ -105,11 +105,11 @@ export const inngest = new Inngest({
 			: undefined,
 });
 
+import { generateDashboard } from "@/lib/inngest/functions/generate-dashboard";
 // وظائف Inngest
 import { generateExcel } from "@/lib/inngest/functions/generate-excel";
-import { generateDashboard } from "@/lib/inngest/functions/generate-dashboard";
-import { sendNotification } from "@/lib/inngest/functions/send-notification";
 import { logActivity } from "@/lib/inngest/functions/log-activity";
+import { sendNotification } from "@/lib/inngest/functions/send-notification";
 
 // تصدير serve مع جميع الوظائف
 export const serveInngest = serve({

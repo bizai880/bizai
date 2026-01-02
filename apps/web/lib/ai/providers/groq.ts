@@ -1,4 +1,4 @@
-import { AIRequest } from "../core";
+import type { AIRequest } from "../core";
 
 export class GroqProvider {
 	private apiKey = process.env.GROQ_API_KEY;

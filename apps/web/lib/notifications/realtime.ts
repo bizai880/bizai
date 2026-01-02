@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 
 interface NotificationEvent {
 	id: string;

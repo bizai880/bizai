@@ -1,4 +1,4 @@
-import { SalesRecord } from "./types";
+import type { SalesRecord } from "./types";
 
 export function generateFollowUpEmail(record: SalesRecord): string {
 	return `

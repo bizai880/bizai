@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { storageUploader } from "@/lib/storage/uploader";
 
 export async function POST(request: NextRequest) {

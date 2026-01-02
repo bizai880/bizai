@@ -1,9 +1,9 @@
-import { GroqProvider } from "./providers/groq";
-import { GeminiProvider } from "./providers/gemini";
-import { LocalAIProvider } from "./providers/local";
-import { HuggingFaceProvider } from "./providers/huggingface";
 import { cache } from "@/lib/cache/redis";
 import { encryptionService } from "@/lib/crypto/encryption";
+import { GeminiProvider } from "./providers/gemini";
+import { GroqProvider } from "./providers/groq";
+import { HuggingFaceProvider } from "./providers/huggingface";
+import { LocalAIProvider } from "./providers/local";
 
 export interface AIRequest {
 	prompt: string;

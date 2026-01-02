@@ -1,15 +1,15 @@
 "use client";
 
-import dynamic from "next/dynamic";
-import { Suspense } from "react";
 import {
-	Eye,
-	Download,
 	BarChart3,
+	Calendar,
+	Download,
+	Eye,
 	TrendingUp,
 	Users,
-	Calendar,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 // Lazy load framer-motion to reduce initial bundle
 const MotionDiv = dynamic(

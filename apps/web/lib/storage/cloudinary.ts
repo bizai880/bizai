@@ -1,4 +1,4 @@
-import { v2 as cloudinary, UploadApiResponse, UploadApiErrorResponse } from 'cloudinary'
+import { v2 as cloudinary, UploadApiErrorResponse, type UploadApiResponse } from 'cloudinary'
 
 // تكوين Cloudinary
 cloudinary.config({
@@ -487,7 +487,7 @@ export async function uploadProductImage(
       result.timestamp = parseInt(timestamp, 10)
       
       // التحقق إذا كان الاسم يحتوي على userId و requestId
-      const userMatch = baseName.match(/excel\/([^\/]+)\/([^\/]+)/)
+      const userMatch = baseName.match(/excel\/([^/]+)\/([^/]+)/)
       if (userMatch) {
         result.userId = userMatch[1]
         result.requestId = userMatch[2]

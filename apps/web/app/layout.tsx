@@ -2,8 +2,8 @@
 import type { Metadata } from "next";
 import { Cairo, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
-import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const cairo = Cairo({
 	subsets: ["arabic", "latin"],

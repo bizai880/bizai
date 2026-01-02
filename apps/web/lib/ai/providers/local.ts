@@ -1,4 +1,4 @@
-import { AIRequest, AIResponse } from "@bizai/shared";
+import type { AIRequest, AIResponse } from "@bizai/shared";
 
 export class LocalAIProvider {
 	private baseUrl: string;

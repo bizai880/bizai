@@ -1,6 +1,6 @@
 import { aicore } from "./lib/ai/core";
-import { getHealthStatus } from "./src/health";
 import { verifyToken } from "./lib/crypto/encryption";
+import { getHealthStatus } from "./src/health";
 
 console.log("✅ All imports working!");
 console.log("AI Core:", typeof aicore);

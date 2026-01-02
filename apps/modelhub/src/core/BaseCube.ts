@@ -1,7 +1,7 @@
-import {
-	CubeMetadata,
+import type {
 	CubeExecutionInput,
 	CubeExecutionResult,
+	CubeMetadata,
 } from "@bizai/shared";
 
 export abstract class BaseCube {

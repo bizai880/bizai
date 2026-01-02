@@ -1,6 +1,11 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+	createContext,
+	type ReactNode,
+	useContext,
+	useState,
+} from "react";
 
 interface AuthContextType {
 	user: any;

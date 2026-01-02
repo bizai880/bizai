@@ -1,18 +1,18 @@
-import {
-	AIRequest,
-	AIResponse,
-	AIProvider,
-	AIModelConfig,
-	CubeMetadata,
-	CubeExecutionInput,
-	CubeExecutionResult,
-} from "@bizai/shared";
-import { GroqProvider } from "./providers/groq";
-import { GeminiProvider } from "./providers/gemini";
-import { LocalAIProvider } from "./providers/local";
-import { HuggingFaceProvider } from "./providers/huggingface";
-import { ModelHubClient } from "./providers/modelhub";
 import { SalesOutlookAutomationCube } from "@bizai/modelhub";
+import {
+	AIModelConfig,
+	type AIProvider,
+	type AIRequest,
+	type AIResponse,
+	type CubeExecutionInput,
+	type CubeExecutionResult,
+	type CubeMetadata,
+} from "@bizai/shared";
+import { GeminiProvider } from "./providers/gemini";
+import { GroqProvider } from "./providers/groq";
+import { HuggingFaceProvider } from "./providers/huggingface";
+import { LocalAIProvider } from "./providers/local";
+import { ModelHubClient } from "./providers/modelhub";
 
 async function runSalesAutomation() {
 	const cube = new SalesOutlookAutomationCube();
@@ -682,7 +682,7 @@ export class AIOrchestrator {
 					mode: "detect",
 				};
 
-			case "sentiment_analysis":
+			case "sentiment_analysis": {
 				const textData = await this.extractTextData(
 					description,
 					previousResults,
@@ -691,16 +691,18 @@ export class AIOrchestrator {
 					text: textData,
 					language: "ar",
 				};
+			}
 
-			case "data_forecasting":
+			case "data_forecasting": {
 				const historicalData = await this.generateSampleData(description);
 				return {
 					data: historicalData,
 					periods: 7,
 					method: "linear",
 				};
+			}
 
-			case "excel_generator":
+			case "excel_generator": {
 				const allData = await this.prepareExcelData(previousResults);
 				return {
 					data: allData,
@@ -708,6 +710,7 @@ export class AIOrchestrator {
 					formulas: this.generateExcelFormulas(description),
 					charts: this.generateCharts(description),
 				};
+			}
 
 			default:
 				return { description };

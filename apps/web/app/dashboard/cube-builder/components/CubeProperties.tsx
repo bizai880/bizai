@@ -1,12 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {
+	Code,
+	Cpu,
+	Database,
+	Download,
+	Eye,
+	Save,
+	Settings,
+	Upload,
+	Zap,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
 import {
 	Select,
 	SelectContent,
@@ -14,19 +24,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import {
-	Save,
-	Eye,
-	Code,
-	Cpu,
-	Database,
-	Upload,
-	Download,
-	Settings,
-	Zap,
-} from "lucide-react";
-import { CubeDefinition } from "../actions";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import type { CubeDefinition } from "../actions";
 
 interface CubePropertiesProps {
 	cube: CubeDefinition | null;

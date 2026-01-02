@@ -1,27 +1,27 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-	Search,
-	Filter,
-	RefreshCw,
-	Star,
-	Eye,
-	Download,
 	Copy,
+	Download,
+	Eye,
+	Filter,
 	MoreVertical,
+	RefreshCw,
+	Search,
+	Star,
 } from "lucide-react";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CubeDefinition } from "../actions";
+import { Input } from "@/components/ui/input";
+import type { CubeDefinition } from "../actions";
 
 interface CubeLibraryProps {
 	cubes: CubeDefinition[];

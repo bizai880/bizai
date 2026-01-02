@@ -1,10 +1,10 @@
-import { BaseCube } from "./BaseCube";
-import {
-	CubeMetadata,
+import type {
 	CubeExecutionInput,
 	CubeExecutionResult,
+	CubeMetadata,
 } from "@bizai/shared";
 import Redis from "ioredis";
+import type { BaseCube } from "./BaseCube";
 
 export class CubeManager {
 	private cubes: Map<string, BaseCube> = new Map();

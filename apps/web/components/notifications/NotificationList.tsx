@@ -1,18 +1,19 @@
 "use client";
 
-import { useState } from "react";
 import {
-	Check,
-	X,
 	AlertCircle,
-	CheckCircle,
-	Info,
 	AlertTriangle,
+	Check,
+	CheckCircle,
 	Clock,
 	ExternalLink,
+	Info,
+	X,
 } from "lucide-react";
-import { useNotifications } from "./NotificationProvider";
 import dynamic from "next/dynamic";
+import { useState } from "react";
+import { useNotifications } from "./NotificationProvider";
+
 const MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },

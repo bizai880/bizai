@@ -1,22 +1,23 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
-	LayoutDashboard,
-	Users,
-	Settings,
 	Bell,
-	HelpCircle,
-	LogOut,
 	ChevronDown,
+	HelpCircle,
+	LayoutDashboard,
+	LogOut,
 	Menu,
+	Settings,
+	Users,
 	X,
 } from "lucide-react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import NotificationBell from "@/components/notifications/NotificationBell";
-import dynamic from "next/dynamic";
+
 const MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },

@@ -1,10 +1,10 @@
 // apps/web/app/admin/login/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { AlertTriangle, Eye, EyeOff, Lock, LogIn, Shield } from "lucide-react";
 import Link from "next/link";
-import { Lock, Shield, Eye, EyeOff, LogIn, AlertTriangle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminLoginPage() {
 	const [email, setEmail] = useState("");

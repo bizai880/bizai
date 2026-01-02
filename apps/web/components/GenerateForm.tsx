@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import dynamic from "next/dynamic";
+import { useState } from "react";
+
 const MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );
+
 import {
-	Send,
 	FileSpreadsheet,
-	LayoutDashboard,
-	Users,
-	Settings,
 	Globe,
+	LayoutDashboard,
+	Send,
+	Settings,
+	Users,
 } from "lucide-react";
 
 const templateTypes = [

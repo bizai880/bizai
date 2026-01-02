@@ -1,5 +1,5 @@
 // apps/web/app/api/admin/login/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 
 		// رسائل خطأ أكثر تحديداً
 		let errorMessage = "حدث خطأ في الخادم";
-		let statusCode = 500;
+		const statusCode = 500;
 
 		if (error.name === "JsonWebTokenError") {
 			errorMessage = "خطأ في إنشاء رمز المصادقة";

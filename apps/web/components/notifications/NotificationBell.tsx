@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Bell, Check, Trash2, Settings } from "lucide-react";
-import { useNotifications } from "./NotificationProvider";
-import NotificationList from "./NotificationList";
+import { Bell, Check, Settings, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useEffect, useRef, useState } from "react";
+import NotificationList from "./NotificationList";
+import { useNotifications } from "./NotificationProvider";
+
 const MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },

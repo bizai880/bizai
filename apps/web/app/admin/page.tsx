@@ -1,18 +1,18 @@
 // apps/web/app/admin/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import {
-	Users,
-	BarChart3,
-	Settings,
-	LogOut,
-	Shield,
 	Activity,
+	BarChart3,
 	CreditCard,
 	Globe,
+	LogOut,
+	Settings,
+	Shield,
+	Users,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
 	const [user, setUser] = useState<any>(null);

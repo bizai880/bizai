@@ -1,4 +1,3 @@
-"use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("./lib/ai/core");
 var health_1 = require("./src/health");

@@ -1,7 +1,9 @@
 'use client'
 
-import { Users, CreditCard, BarChart3, Zap, TrendingUp, TrendingDown } from 'lucide-react',
+import { BarChart3, CreditCard, TrendingDown, TrendingUp, Users, Zap } from 'lucide-react',
+
 import dynamic from 'next/dynamic';
+
 const MotionDiv = dynamic(
   () => import('framer-motion').then(mod => ({ default: mod.motion.div })),
   { ssr: false }

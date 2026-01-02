@@ -1,16 +1,16 @@
 // apps/web/components/ui/icons.tsx
 import {
-	Check,
-	X,
 	ArrowRight,
-	Star,
-	Zap,
-	Users,
-	Shield,
-	CreditCard,
+	Check,
 	CheckCircle,
-	XCircle,
+	CreditCard,
 	type IconProps,
+	Shield,
+	Star,
+	Users,
+	X,
+	XCircle,
+	Zap,
 } from "lucide-react";
 
 export {

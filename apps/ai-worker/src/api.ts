@@ -1,10 +1,9 @@
 // API Module - Fixed with correct imports
-import { Request, Response } from "express";
-
-// Correct imports - use relative paths
-import { getHealthStatus } from "./health/index";
+import type { Request, Response } from "express";
 import { aicore } from "../lib/ai/core";
 import { verifyToken } from "../lib/crypto/encryption";
+// Correct imports - use relative paths
+import { getHealthStatus } from "./health/index";
 
 // Type definitions
 interface ApiResponse<T = any> {
