@@ -1,337 +1,295 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    ".env.*",
-    "turbo.json",
-    "package.json",
-    "tsconfig.json",
-    "package-lock.json",
-    "yarn.lock",
-    "pnpm-lock.yaml",
-    "bun.lockb",
-    "drizzle.config.ts",
-    "next.config.js",
-    "tailwind.config.js",
-    "postcss.config.js",
-    "eslint.config.js",
-    "prettier.config.js",
-    "jest.config.js",
-    "playwright.config.ts"
-  ],
-  "globalEnv": [
-    "NODE_ENV",
-    "NEXT_PUBLIC_*",
-    "TURBO_*",
-    "CI",
-    "VERCEL_*",
-    "AWS_*",
-    "AZURE_*",
-    "GOOGLE_*"
-  ],
-  "tasks": {
-    "@bizai/web#build": {
-      "dependsOn": [
-        "@bizai/shared#build",
-        "@bizai/database#build",
-        "@bizai/modelhub#build"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**",
-        "dist/**",
-        "build/**"
-      ],
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_*",
-        "GROQ_API_KEY",
-        "GEMINI_API_KEY",
-        "HUGGINGFACE_TOKEN",
-        "OPENAI_API_KEY",
-        "SUPABASE_*",
-        "DATABASE_URL",
-        "REDIS_URL"
-      ],
-      "cache": true
-    },
+	"$schema": "https://turbo.build/schema.json",
+	"globalDependencies": [
+		".env.*",
+		"turbo.json",
+		"package.json",
+		"tsconfig.json",
+		"package-lock.json",
+		"yarn.lock",
+		"pnpm-lock.yaml",
+		"bun.lockb",
+		"drizzle.config.ts",
+		"next.config.js",
+		"tailwind.config.js",
+		"postcss.config.js",
+		"eslint.config.js",
+		"prettier.config.js",
+		"jest.config.js",
+		"playwright.config.ts"
+	],
+	"globalEnv": [
+		"NODE_ENV",
+		"NEXT_PUBLIC_*",
+		"TURBO_*",
+		"CI",
+		"VERCEL_*",
+		"AWS_*",
+		"AZURE_*",
+		"GOOGLE_*"
+	],
+	"tasks": {
+		"@bizai/web#build": {
+			"dependsOn": [
+				"@bizai/shared#build",
+				"@bizai/database#build",
+				"@bizai/modelhub#build"
+			],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+			"env": [
+				"NODE_ENV",
+				"NEXT_PUBLIC_*",
+				"GROQ_API_KEY",
+				"GEMINI_API_KEY",
+				"HUGGINGFACE_TOKEN",
+				"OPENAI_API_KEY",
+				"SUPABASE_*",
+				"DATABASE_URL",
+				"REDIS_URL"
+			],
+			"cache": true
+		},
 
-    "@bizai/web#dev": {
-      "cache": false,
-      "persistent": true,
-      "env": [
-        "NODE_ENV",
-        "NEXT_PUBLIC_*"
-      ]
-    },
+		"@bizai/web#dev": {
+			"cache": false,
+			"persistent": true,
+			"env": ["NODE_ENV", "NEXT_PUBLIC_*"]
+		},
 
-    "@bizai/web#start": {
-      "dependsOn": ["@bizai/web#build"],
-      "cache": false
-    },
+		"@bizai/web#start": {
+			"dependsOn": ["@bizai/web#build"],
+			"cache": false
+		},
 
-    "@bizai/modelhub#build": {
-      "dependsOn": ["@bizai/shared#build"],
-      "outputs": [
-        "dist/**",
-        "lib/**"
-      ],
-      "env": [
-        "NODE_ENV",
-        "MODELHUB_PORT",
-        "MODELHUB_URL",
-        "REDIS_URL",
-        "DATABASE_URL",
-        "HUGGINGFACE_TOKEN",
-        "OPENAI_API_KEY",
-        "GOOGLE_AI_API_KEY",
-        "CLOUDINARY_URL",
-        "AWS_ACCESS_KEY_ID",
-        "AWS_SECRET_ACCESS_KEY"
-      ],
-      "cache": true
-    },
+		"@bizai/modelhub#build": {
+			"dependsOn": ["@bizai/shared#build"],
+			"outputs": ["dist/**", "lib/**"],
+			"env": [
+				"NODE_ENV",
+				"MODELHUB_PORT",
+				"MODELHUB_URL",
+				"REDIS_URL",
+				"DATABASE_URL",
+				"HUGGINGFACE_TOKEN",
+				"OPENAI_API_KEY",
+				"GOOGLE_AI_API_KEY",
+				"CLOUDINARY_URL",
+				"AWS_ACCESS_KEY_ID",
+				"AWS_SECRET_ACCESS_KEY"
+			],
+			"cache": true
+		},
 
-    "@bizai/modelhub#dev": {
-      "cache": false,
-      "persistent": true,
-      "env": [
-        "NODE_ENV",
-        "MODELHUB_PORT"
-      ]
-    },
+		"@bizai/modelhub#dev": {
+			"cache": false,
+			"persistent": true,
+			"env": ["NODE_ENV", "MODELHUB_PORT"]
+		},
 
-    "@bizai/modelhub#start": {
-      "dependsOn": ["@bizai/modelhub#build"],
-      "cache": false
-    },
+		"@bizai/modelhub#start": {
+			"dependsOn": ["@bizai/modelhub#build"],
+			"cache": false
+		},
 
-    "@bizai/ai-worker#build": {
-      "dependsOn": ["@bizai/shared#build"],
-      "outputs": [
-        "dist/**",
-        "build/**"
-      ],
-      "env": [
-        "NODE_ENV",
-        "OLLAMA_BASE_URL",
-        "GROQ_API_KEY",
-        "GEMINI_API_KEY",
-        "HUGGINGFACE_TOKEN",
-        "INNGEST_*",
-        "REDIS_URL",
-        "DATABASE_URL"
-      ],
-      "cache": true
-    },
+		"@bizai/ai-worker#build": {
+			"dependsOn": ["@bizai/shared#build"],
+			"outputs": ["dist/**", "build/**"],
+			"env": [
+				"NODE_ENV",
+				"OLLAMA_BASE_URL",
+				"GROQ_API_KEY",
+				"GEMINI_API_KEY",
+				"HUGGINGFACE_TOKEN",
+				"INNGEST_*",
+				"REDIS_URL",
+				"DATABASE_URL"
+			],
+			"cache": true
+		},
 
-    "@bizai/ai-worker#dev": {
-      "cache": false,
-      "persistent": true,
-      "env": ["NODE_ENV"]
-    },
+		"@bizai/ai-worker#dev": {
+			"cache": false,
+			"persistent": true,
+			"env": ["NODE_ENV"]
+		},
 
-    "@bizai/shared#build": {
-      "outputs": [
-        "dist/**",
-        "lib/**"
-      ],
-      "cache": true
-    },
+		"@bizai/shared#build": {
+			"outputs": ["dist/**", "lib/**"],
+			"cache": true
+		},
 
-    "@bizai/shared#type-check": {
-      "outputs": ["*.tsbuildinfo"],
-      "cache": true
-    },
+		"@bizai/shared#type-check": {
+			"outputs": ["*.tsbuildinfo"],
+			"cache": true
+		},
 
-    "@bizai/database#build": {
-      "outputs": [
-        "dist/**",
-        "src/schema.ts",
-        "drizzle/**"
-      ],
-      "env": ["DATABASE_URL"],
-      "cache": true
-    },
+		"@bizai/database#build": {
+			"outputs": ["dist/**", "src/schema.ts", "drizzle/**"],
+			"env": ["DATABASE_URL"],
+			"cache": true
+		},
 
-    "@bizai/database#generate": {
-      "cache": false,
-      "env": ["DATABASE_URL"]
-    },
+		"@bizai/database#generate": {
+			"cache": false,
+			"env": ["DATABASE_URL"]
+		},
 
-    "@bizai/database#migrate": {
-      "cache": false,
-      "env": ["DATABASE_URL"]
-    },
+		"@bizai/database#migrate": {
+			"cache": false,
+			"env": ["DATABASE_URL"]
+		},
 
-    "@bizai/database#seed": {
-      "dependsOn": ["@bizai/database#migrate"],
-      "cache": false,
-      "env": ["DATABASE_URL"]
-    },
+		"@bizai/database#seed": {
+			"dependsOn": ["@bizai/database#migrate"],
+			"cache": false,
+			"env": ["DATABASE_URL"]
+		},
 
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "build/**", ".next/**"],
-      "cache": true
-    },
+		"build": {
+			"dependsOn": ["^build"],
+			"outputs": ["dist/**", "build/**", ".next/**"],
+			"cache": true
+		},
 
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
 
-    "lint": {
-      "outputs": [],
-      "cache": true,
-      "inputs": ["src/**/*.{ts,tsx,js,jsx}", "!**/*.d.ts"]
-    },
+		"lint": {
+			"outputs": [],
+			"cache": true,
+			"inputs": ["src/**/*.{ts,tsx,js,jsx}", "!**/*.d.ts"]
+		},
 
-    "lint:fix": {
-      "cache": false,
-      "dependsOn": ["lint"]
-    },
+		"lint:fix": {
+			"cache": false,
+			"dependsOn": ["lint"]
+		},
 
-    "type-check": {
-      "outputs": ["*.tsbuildinfo"],
-      "cache": true
-    },
+		"type-check": {
+			"outputs": ["*.tsbuildinfo"],
+			"cache": true
+		},
 
-    "test": {
-      "outputs": [
-        "coverage/**",
-        "test-results/**"
-      ],
-      "cache": true,
-      "env": [
-        "NODE_ENV",
-        "CI",
-        "DATABASE_URL",
-        "REDIS_URL"
-      ]
-    },
+		"test": {
+			"outputs": ["coverage/**", "test-results/**"],
+			"cache": true,
+			"env": ["NODE_ENV", "CI", "DATABASE_URL", "REDIS_URL"]
+		},
 
-    "test:watch": {
-      "cache": false,
-      "persistent": true
-    },
+		"test:watch": {
+			"cache": false,
+			"persistent": true
+		},
 
-    "test:e2e": {
-      "dependsOn": ["@bizai/web#build"],
-      "cache": false,
-      "env": [
-        "NODE_ENV",
-        "BASE_URL",
-        "DATABASE_URL"
-      ]
-    },
+		"test:e2e": {
+			"dependsOn": ["@bizai/web#build"],
+			"cache": false,
+			"env": ["NODE_ENV", "BASE_URL", "DATABASE_URL"]
+		},
 
-    "clean": {
-      "cache": false
-    },
+		"clean": {
+			"cache": false
+		},
 
-    "install": {
-      "cache": false
-    },
+		"install": {
+			"cache": false
+		},
 
-    "install:ci": {
-      "cache": false
-    },
+		"install:ci": {
+			"cache": false
+		},
 
-    "depcheck": {
-      "cache": true
-    },
+		"depcheck": {
+			"cache": true
+		},
 
-    "audit": {
-      "cache": false
-    },
+		"audit": {
+			"cache": false
+		},
 
-    "format": {
-      "outputs": [],
-      "cache": true,
-      "inputs": [
-        "src/**/*.{ts,tsx,js,jsx,json,md}",
-        "*.{json,md,yml,yaml}"
-      ]
-    },
+		"format": {
+			"outputs": [],
+			"cache": true,
+			"inputs": ["src/**/*.{ts,tsx,js,jsx,json,md}", "*.{json,md,yml,yaml}"]
+		},
 
-    "format:check": {
-      "dependsOn": ["format"],
-      "cache": true
-    },
+		"format:check": {
+			"dependsOn": ["format"],
+			"cache": true
+		},
 
-    "db:reset": {
-      "cache": false,
-      "env": ["DATABASE_URL"]
-    },
+		"db:reset": {
+			"cache": false,
+			"env": ["DATABASE_URL"]
+		},
 
-    "db:studio": {
-      "cache": false,
-      "persistent": true,
-      "env": ["DATABASE_URL"]
-    },
+		"db:studio": {
+			"cache": false,
+			"persistent": true,
+			"env": ["DATABASE_URL"]
+		},
 
-    "docker:build": {
-      "cache": false,
-      "env": [
-        "DOCKER_BUILDKIT",
-        "NODE_ENV"
-      ]
-    },
+		"docker:build": {
+			"cache": false,
+			"env": ["DOCKER_BUILDKIT", "NODE_ENV"]
+		},
 
-    "docker:up": {
-      "dependsOn": ["docker:build"],
-      "cache": false
-    },
+		"docker:up": {
+			"dependsOn": ["docker:build"],
+			"cache": false
+		},
 
-    "docker:down": {
-      "cache": false
-    },
+		"docker:down": {
+			"cache": false
+		},
 
-    "analyze": {
-      "dependsOn": ["@bizai/web#build"],
-      "cache": false
-    },
+		"analyze": {
+			"dependsOn": ["@bizai/web#build"],
+			"cache": false
+		},
 
-    "analyze:bundle": {
-      "cache": false
-    },
+		"analyze:bundle": {
+			"cache": false
+		},
 
-    "deploy:staging": {
-      "dependsOn": ["build", "test", "lint"],
-      "cache": false
-    },
+		"deploy:staging": {
+			"dependsOn": ["build", "test", "lint"],
+			"cache": false
+		},
 
-    "deploy:production": {
-      "dependsOn": ["build", "test", "lint"],
-      "cache": false
-    },
+		"deploy:production": {
+			"dependsOn": ["build", "test", "lint"],
+			"cache": false
+		},
 
-    "generate": {
-      "cache": false
-    },
+		"generate": {
+			"cache": false
+		},
 
-    "generate:component": {
-      "cache": false
-    },
+		"generate:component": {
+			"cache": false
+		},
 
-    "generate:cube": {
-      "cache": false,
-      "env": ["MODELHUB_URL"]
-    },
+		"generate:cube": {
+			"cache": false,
+			"env": ["MODELHUB_URL"]
+		},
 
-    "generate:api": {
-      "cache": false
-    },
+		"generate:api": {
+			"cache": false
+		},
 
-    "storybook": {
-      "cache": false,
-      "persistent": true,
-      "dependsOn": ["@bizai/web#build"]
-    },
+		"storybook": {
+			"cache": false,
+			"persistent": true,
+			"dependsOn": ["@bizai/web#build"]
+		},
 
-    "storybook:build": {
-      "dependsOn": ["@bizai/web#build"],
-      "cache": true
-    }
-  }
+		"storybook:build": {
+			"dependsOn": ["@bizai/web#build"],
+			"cache": true
+		}
+	}
 }

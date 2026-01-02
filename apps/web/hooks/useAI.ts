@@ -1,161 +1,163 @@
-'use client'
+"use client";
 
-import { useState, useCallback } from 'react'
-import { toast } from 'sonner'
+import { useState, useCallback } from "react";
+import { toast } from "sonner";
 
 interface AIRequest {
-  prompt: string
-  type?: 'excel' | 'dashboard' | 'tracking'
-  options?: any
+	prompt: string;
+	type?: "excel" | "dashboard" | "tracking";
+	options?: any;
 }
 
 interface AIResponse {
-  success: boolean
-  requestId: string
-  message: string
-  statusUrl: string
+	success: boolean;
+	requestId: string;
+	message: string;
+	statusUrl: string;
 }
 
 export function useAI() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [result, setResult] = useState<any>(null)
+	const [isLoading, setIsLoading] = useState(false);
+	const [progress, setProgress] = useState(0);
+	const [result, setResult] = useState<any>(null);
 
-  const generate = useCallback(async (request: AIRequest): Promise<AIResponse> => {
-    setIsLoading(true)
-    setProgress(0)
-    setResult(null)
+	const generate = useCallback(
+		async (request: AIRequest): Promise<AIResponse> => {
+			setIsLoading(true);
+			setProgress(0);
+			setResult(null);
 
-    try {
-      const interval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 10, 90))
-      }, 500)
+			try {
+				const interval = setInterval(() => {
+					setProgress((prev) => Math.min(prev + 10, 90));
+				}, 500);
 
-      const response = await fetch('/api/ai/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-        body: JSON.stringify(request)
-      })
+				const response = await fetch("/api/ai/generate", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+					},
+					body: JSON.stringify(request),
+				});
 
-      clearInterval(interval)
+				clearInterval(interval);
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'فشل في معالجة الطلب')
-      }
+				if (!response.ok) {
+					const error = await response.json();
+					throw new Error(error.error || "فشل في معالجة الطلب");
+				}
 
-      const data = await response.json()
-      setProgress(100)
-      setResult(data)
+				const data = await response.json();
+				setProgress(100);
+				setResult(data);
 
-      // بدء تتبع الحالة
-      if (data.requestId) {
-        trackStatus(data.requestId)
-      }
+				// بدء تتبع الحالة
+				if (data.requestId) {
+					trackStatus(data.requestId);
+				}
 
-      toast.success('تم بدء معالجة طلبك بنجاح')
-      return data
+				toast.success("تم بدء معالجة طلبك بنجاح");
+				return data;
+			} catch (error: any) {
+				toast.error(error.message || "حدث خطأ أثناء المعالجة");
+				throw error;
+			} finally {
+				setIsLoading(false);
+			}
+		},
+		[],
+	);
 
-    } catch (error: any) {
-      toast.error(error.message || 'حدث خطأ أثناء المعالجة')
-      throw error
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+	const trackStatus = useCallback(async (requestId: string) => {
+		const checkStatus = async () => {
+			try {
+				const response = await fetch(`/api/ai/status/${requestId}`, {
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+					},
+				});
 
-  const trackStatus = useCallback(async (requestId: string) => {
-    const checkStatus = async () => {
-      try {
-        const response = await fetch(`/api/ai/status/${requestId}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-          }
-        })
+				if (response.ok) {
+					const data = await response.json();
 
-        if (response.ok) {
-          const data = await response.json()
-          
-          if (data.data.status === 'completed') {
-            toast.success('تم الانتهاء من معالجة طلبك!')
-            setResult(data.data)
-            return true
-          } else if (data.data.status === 'failed') {
-            toast.error('فشلت معالجة الطلب')
-            return true
-          }
-        }
-        
-        return false
-      } catch (error) {
-        console.error('Error checking status:', error)
-        return false
-      }
-    }
+					if (data.data.status === "completed") {
+						toast.success("تم الانتهاء من معالجة طلبك!");
+						setResult(data.data);
+						return true;
+					} else if (data.data.status === "failed") {
+						toast.error("فشلت معالجة الطلب");
+						return true;
+					}
+				}
 
-    // فحص كل 3 ثواني لمدة دقيقة
-    let attempts = 0
-    const maxAttempts = 20
-    
-    const interval = setInterval(async () => {
-      attempts++
-      const isDone = await checkStatus()
-      
-      if (isDone || attempts >= maxAttempts) {
-        clearInterval(interval)
-      }
-    }, 3000)
-  }, [])
+				return false;
+			} catch (error) {
+				console.error("Error checking status:", error);
+				return false;
+			}
+		};
 
-  const analyze = useCallback(async (description: string) => {
-    try {
-      const response = await fetch('/api/ai/analyze', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ description })
-      })
+		// فحص كل 3 ثواني لمدة دقيقة
+		let attempts = 0;
+		const maxAttempts = 20;
 
-      if (!response.ok) {
-        throw new Error('فشل في تحليل الوصف')
-      }
+		const interval = setInterval(async () => {
+			attempts++;
+			const isDone = await checkStatus();
 
-      return await response.json()
-    } catch (error) {
-      toast.error('فشل في تحليل الوصف')
-      throw error
-    }
-  }, [])
+			if (isDone || attempts >= maxAttempts) {
+				clearInterval(interval);
+			}
+		}, 3000);
+	}, []);
 
-  const getTemplates = useCallback(async () => {
-    try {
-      const response = await fetch('/api/ai/templates')
-      
-      if (!response.ok) {
-        throw new Error('فشل في جلب القوالب')
-      }
+	const analyze = useCallback(async (description: string) => {
+		try {
+			const response = await fetch("/api/ai/analyze", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ description }),
+			});
 
-      return await response.json()
-    } catch (error) {
-      toast.error('فشل في جلب القوالب')
-      throw error
-    }
-  }, [])
+			if (!response.ok) {
+				throw new Error("فشل في تحليل الوصف");
+			}
 
-  return {
-    generate,
-    analyze,
-    getTemplates,
-    isLoading,
-    progress,
-    result,
-    reset: () => {
-      setResult(null)
-      setProgress(0)
-    }
-  }
+			return await response.json();
+		} catch (error) {
+			toast.error("فشل في تحليل الوصف");
+			throw error;
+		}
+	}, []);
+
+	const getTemplates = useCallback(async () => {
+		try {
+			const response = await fetch("/api/ai/templates");
+
+			if (!response.ok) {
+				throw new Error("فشل في جلب القوالب");
+			}
+
+			return await response.json();
+		} catch (error) {
+			toast.error("فشل في جلب القوالب");
+			throw error;
+		}
+	}, []);
+
+	return {
+		generate,
+		analyze,
+		getTemplates,
+		isLoading,
+		progress,
+		result,
+		reset: () => {
+			setResult(null);
+			setProgress(0);
+		},
+	};
 }

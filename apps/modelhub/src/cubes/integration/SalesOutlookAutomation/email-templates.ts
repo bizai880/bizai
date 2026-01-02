@@ -1,7 +1,7 @@
-import { SalesRecord } from './types';
+import { SalesRecord } from "./types";
 
 export function generateFollowUpEmail(record: SalesRecord): string {
-  return `
+	return `
     <!DOCTYPE html>
     <html dir="rtl" lang="ar">
     <head>
@@ -46,7 +46,7 @@ export function generateFollowUpEmail(record: SalesRecord): string {
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">آخر متابعة:</div>
-                        <div class="detail-value">${new Date(record.lastFollowUpDate).toLocaleDateString('ar-SA')}</div>
+                        <div class="detail-value">${new Date(record.lastFollowUpDate).toLocaleDateString("ar-SA")}</div>
                     </div>
                 </div>
                 
@@ -66,7 +66,7 @@ export function generateFollowUpEmail(record: SalesRecord): string {
 }
 
 export function generateDeliveryAlertEmail(record: SalesRecord): string {
-  return `
+	return `
     <!DOCTYPE html>
     <html dir="rtl" lang="ar">
     <head>
@@ -108,7 +108,7 @@ export function generateDeliveryAlertEmail(record: SalesRecord): string {
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">موعد التسليم المتوقع:</div>
-                        <div class="detail-value">${new Date(record.expectedDeliveryDate).toLocaleDateString('ar-SA')}</div>
+                        <div class="detail-value">${new Date(record.expectedDeliveryDate).toLocaleDateString("ar-SA")}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">حالة التسليم الحالية:</div>
@@ -146,9 +146,9 @@ export function generateDeliveryAlertEmail(record: SalesRecord): string {
 }
 
 export function generatePriorityAlertEmail(record: SalesRecord): string {
-  const priorityColor = record.priority === 'Critical' ? '#D83B01' : '#FFB900';
-  
-  return `
+	const priorityColor = record.priority === "Critical" ? "#D83B01" : "#FFB900";
+
+	return `
     <!DOCTYPE html>
     <html dir="rtl" lang="ar">
     <head>
@@ -180,11 +180,11 @@ export function generatePriorityAlertEmail(record: SalesRecord): string {
     <body>
         <div class="container">
             <div class="header">
-                <h1>🚨 طلب ${record.priority === 'Critical' ? 'حرج' : 'عالي الأولوية'}</h1>
+                <h1>🚨 طلب ${record.priority === "Critical" ? "حرج" : "عالي الأولوية"}</h1>
             </div>
             <div class="content">
                 <div class="priority-badge">
-                    ${record.priority === 'Critical' ? '🔴 حرج' : '🟡 عالي الأولوية'}
+                    ${record.priority === "Critical" ? "🔴 حرج" : "🟡 عالي الأولوية"}
                 </div>
                 
                 <p>يتطلب الطلب التالي اهتماماً فورياً من فريق المبيعات:</p>
@@ -208,7 +208,7 @@ export function generatePriorityAlertEmail(record: SalesRecord): string {
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">موعد التسليم:</div>
-                        <div class="detail-value">${new Date(record.expectedDeliveryDate).toLocaleDateString('ar-SA')}</div>
+                        <div class="detail-value">${new Date(record.expectedDeliveryDate).toLocaleDateString("ar-SA")}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">الشخص المسؤول:</div>
@@ -242,7 +242,7 @@ export function generatePriorityAlertEmail(record: SalesRecord): string {
 }
 
 export function generateEscalationEmail(record: SalesRecord): string {
-  return `
+	return `
     <!DOCTYPE html>
     <html dir="rtl" lang="ar">
     <head>
@@ -291,7 +291,7 @@ export function generateEscalationEmail(record: SalesRecord): string {
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">سبب التصعيد:</div>
-                        <div class="detail-value">${record.escalationReason || 'غير محدد'}</div>
+                        <div class="detail-value">${record.escalationReason || "غير محدد"}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">الحالة الحالية:</div>
@@ -303,12 +303,12 @@ export function generateEscalationEmail(record: SalesRecord): string {
                     </div>
                     <div class="detail-row">
                         <div class="detail-label">تاريخ آخر متابعة:</div>
-                        <div class="detail-value">${new Date(record.lastFollowUpDate).toLocaleDateString('ar-SA')}</div>
+                        <div class="detail-value">${new Date(record.lastFollowUpDate).toLocaleDateString("ar-SA")}</div>
                     </div>
                 </div>
                 
                 <h3>معلومات إضافية:</h3>
-                <p>${record.recommendedAction || 'يحتاج العميل إلى اهتمام خاص قد يتطلب قرارات إدارية أو موارد إضافية.'}</p>
+                <p>${record.recommendedAction || "يحتاج العميل إلى اهتمام خاص قد يتطلب قرارات إدارية أو موارد إضافية."}</p>
                 
                 <div class="recommendations">
                     <h3>الإجراءات المقترحة:</h3>

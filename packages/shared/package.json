@@ -1,25 +1,25 @@
 {
-  "name": "@bizai/shared",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "fix:imports": "sed -i \"s|'/lib/storage/uploader'|g\" src/index.ts && biome check --write --unsafe src/",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
-  },
-  "dependencies": {
-    "@upstash/redis": "1.35.8",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
-    "@types/node": "^25.0.3",
-    "@types/jest": "^30.0.0",
-    "jest": "^30.2.0",
-    "ts-jest": "^29.4.6"
-  }
+	"name": "@bizai/shared",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist",
+		"fix:imports": "sed -i \"s|'/lib/storage/uploader'|g\" src/index.ts && biome check --write --unsafe src/",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:coverage": "jest --coverage"
+	},
+	"dependencies": {
+		"@upstash/redis": "1.35.8",
+		"typescript": "^5.9.3"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"@types/jest": "^30.0.0",
+		"jest": "^30.2.0",
+		"ts-jest": "^29.4.6"
+	}
 }

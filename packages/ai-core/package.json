@@ -1,15 +1,15 @@
 {
-  "name": "@bizai/ai-core",
-  "version": "1.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist build .next .turbo"
-  },
-  "dependencies": {
-    "@bizai/shared": "*",
-    "typescript": "^5.9.3"
-  }
+	"name": "@bizai/ai-core",
+	"version": "1.0.0",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsc --watch",
+		"clean": "rm -rf dist build .next .turbo"
+	},
+	"dependencies": {
+		"@bizai/shared": "*",
+		"typescript": "^5.9.3"
+	}
 }

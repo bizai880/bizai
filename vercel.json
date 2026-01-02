@@ -1,12 +1,12 @@
 {
-  "buildCommand": "cd apps/web && npm install --legacy-peer-deps && npm run build",
-  "devCommand": "npm run dev:turbopack",
-  "installCommand": "cd apps/web && npm install --legacy-peer-deps",
-  "outputDirectory": "apps/web/.next",
-  "framework": "nextjs",
-  "regions": ["iad1"],
-  "env": {
-    "ESLINT_NO_DEV_ERRORS": "true",
-    "TURBOPACK": "true"
-  }
+	"buildCommand": "cd apps/web && npm install --legacy-peer-deps && npm run build",
+	"devCommand": "npm run dev:turbopack",
+	"installCommand": "cd apps/web && npm install --legacy-peer-deps",
+	"outputDirectory": "apps/web/.next",
+	"framework": "nextjs",
+	"regions": ["iad1"],
+	"env": {
+		"ESLINT_NO_DEV_ERRORS": "true",
+		"TURBOPACK": "true"
+	}
 }

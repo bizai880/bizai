@@ -1,7 +1,7 @@
 export const motion = {
-  div: (props: any) => props.children,
-  button: (props: any) => props.children,
-  span: (props: any) => props.children
+	div: (props: any) => props.children,
+	button: (props: any) => props.children,
+	span: (props: any) => props.children,
 };
 
 export const AnimatePresence = (props: any) => props.children;

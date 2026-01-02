@@ -1,3 +1,3 @@
 export const generateExcel = (): string => {
-    return 'Excel generated';
+	return "Excel generated";
 };

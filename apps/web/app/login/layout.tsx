@@ -1,13 +1,13 @@
 export default function LoginLayout({
-  children,
+	children,
 }: {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }) {
-  return (
-    <html>
-      <body>
-        <main>{children}</main>
-      </body>
-    </html>
-  );
+	return (
+		<html>
+			<body>
+				<main>{children}</main>
+			</body>
+		</html>
+	);
 }

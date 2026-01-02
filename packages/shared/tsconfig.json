@@ -1,22 +1,23 @@
 {
-  "compilerOptions": {
-    "target": "es2022",
-    "module": "commonjs",
-    "lib": ["es2022"],
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": false,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "paths": {
-      "@bizai/uploader": ["../web/lib/storage/uploader"]}
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+	"compilerOptions": {
+		"target": "es2022",
+		"module": "commonjs",
+		"lib": ["es2022"],
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"declaration": true,
+		"declarationMap": true,
+		"sourceMap": false,
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"@bizai/uploader": ["../web/lib/storage/uploader"]
+		}
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist", "**/*.test.ts"]
 }
