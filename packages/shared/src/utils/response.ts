@@ -16,7 +16,7 @@ export function successResponse<T>(
 export function errorResponse(
 	error: string,
 	statusCode: number = 500,
-	details?: any,
+	details?: unknown,
 ): ApiResponse {
 	return {
 		success: false,
