@@ -112,7 +112,7 @@ export function createApiRouter() {
 	const router = express.Router();
 
 	// Health endpoint
-	router.get("/health", async (req: Request, res: Response) => {
+	router.get("/health", async (_req: Request, res: Response) => {
 		const response = await healthCheck();
 		res.status(response.statusCode).json(response);
 	});
