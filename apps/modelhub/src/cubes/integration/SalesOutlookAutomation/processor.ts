@@ -113,7 +113,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 		console.log("✅ مكعب أتمتة المبيعات جاهز");
 	}
 
-	async process(input: any): Promise<CubeExecutionResult> {
+	async process(input: unknown): Promise<CubeExecutionResult> {
 		try {
 			const startTime = new Date();
 
@@ -164,7 +164,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 				),
 				executionTime,
 			};
-		} catch (error: any) {
+		} catch (error: unknown) {
 			return {
 				success: false,
 				alertsSent: 0,
@@ -183,7 +183,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 		}
 	}
 
-	private loadConfig(input: any): AutomationConfig {
+	private loadConfig(input: unknown): AutomationConfig {
 		return {
 			excelFilePath: input.excelFile,
 			sheetName: input.sheetName || "Sales Tracker",
@@ -220,7 +220,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 		});
 	}
 
-	private createAlertRules(recipients: any, options: any): any[] {
+	private createAlertRules(recipients: unknown, options: unknown): unknown[] {
 		const rules = [];
 
 		// 1. قاعدة تذكير المتابعة
@@ -340,7 +340,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 
 	private async processSalesRecords(
 		records: SalesRecord[],
-		rules: any[],
+		rules: unknown[],
 	): Promise<AlertResult[]> {
 		const results: AlertResult[] = [];
 
@@ -395,7 +395,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 						emailBody,
 						timestamp: new Date(),
 					});
-				} catch (error: any) {
+				} catch (error: unknown) {
 					results.push({
 						ruleId: rule.id,
 						recordId: record.rfqNumber,
@@ -413,7 +413,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 		return results;
 	}
 
-	private getRecipientsForRule(rule: any, record: SalesRecord): any[] {
+	private getRecipientsForRule(rule: unknown, record: SalesRecord): unknown[] {
 		if (typeof rule.recipients === "function") {
 			return rule.recipients(record);
 		}
@@ -448,7 +448,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 			const info = await this.transporter.sendMail(mailOptions);
 			console.log(`✅ Email sent: ${info.messageId}`);
 			return true;
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error(`❌ Failed to send email: ${error.message}`);
 			throw error;
 		}
@@ -467,7 +467,7 @@ export class SalesOutlookAutomationCube extends BaseCube {
 		return match ? match[0] : null;
 	}
 
-	private calculateSummary(results: AlertResult[]): any {
+	private calculateSummary(results: AlertResult[]): unknown {
 		const summary = {
 			followUpReminders: 0,
 			deliveryAlerts: 0,
