@@ -34,9 +34,9 @@ export async function parseExcelFile(
 		const data = XLSX.utils.sheet_to_json(worksheet);
 
 		// تحويل البيانات إلى SalesRecord
-		const records: SalesRecord[] = data.map((row: any, index: number) => {
+		const records: SalesRecord[] = data.map((row: unknown, index: number) => {
 			// البحث عن الأعمدة بأسماء مختلفة
-			const findColumn = (possibleNames: string[]): any => {
+			const findColumn = (possibleNames: string[]): unknown => {
 				for (const name of possibleNames) {
 					if (row[name] !== undefined) return row[name];
 				}
@@ -96,13 +96,13 @@ export async function parseExcelFile(
 
 		// تصفية السجلات الفارغة
 		return records.filter((record) => record.customerName && record.rfqNumber);
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Error parsing Excel file:", error);
 		throw new Error(`Failed to parse Excel file: ${error.message}`);
 	}
 }
 
-function parseDate(dateValue: any): Date | null {
+function parseDate(dateValue: unknown): Date | null {
 	if (!dateValue) return null;
 
 	try {
@@ -141,7 +141,7 @@ function parseDate(dateValue: any): Date | null {
 }
 
 function mapPriority(
-	priorityValue: any,
+	priorityValue: unknown,
 ): "Low" | "Medium" | "High" | "Critical" {
 	if (!priorityValue) return "Medium";
 
@@ -174,7 +174,7 @@ function mapPriority(
 	return "Medium";
 }
 
-function mapEscalationFlag(flagValue: any): "Yes" | "No" {
+function mapEscalationFlag(flagValue: unknown): "Yes" | "No" {
 	if (!flagValue) return "No";
 
 	const value = flagValue.toString().toLowerCase();
