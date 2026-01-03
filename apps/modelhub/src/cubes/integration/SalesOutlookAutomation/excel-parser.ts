@@ -118,7 +118,7 @@ function parseDate(dateValue: unknown): Date | null {
 		if (typeof dateValue === "string") {
 			// تحويل التاريخ من نص
 			const parsedDate = new Date(dateValue);
-			if (!isNaN(parsedDate.getTime())) {
+			if (!Number.isNaN(parsedDate.getTime())) {
 				return parsedDate;
 			}
 
