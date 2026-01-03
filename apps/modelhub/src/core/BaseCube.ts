@@ -38,7 +38,7 @@ export abstract class BaseCube {
 			// التحقق من وجود تخزين مؤقت
 			const cacheKey = this.generateCacheKey(input.data);
 			if (input.options?.cache && this.cache.has(cacheKey)) {
-				cached = true;
+				_cached = true;
 				return {
 					success: true,
 					data: this.cache.get(cacheKey),
