@@ -9,7 +9,7 @@ export interface DatabaseConfig {
 }
 
 export interface QueryResult {
-	rows: any[];
+	rows: unknown[];
 	rowCount: number;
 	command: string;
 }
