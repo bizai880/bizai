@@ -8,7 +8,7 @@ export interface DatabaseConfig {
 }
 
 export interface QueryOptions {
-	params?: any[];
+	params?: unknown[];
 	timeout?: number;
 }
 
@@ -23,7 +23,7 @@ export class DatabaseClient {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
 
-	async query<T = any>(sql: string, options?: QueryOptions): Promise<T[]> {
+	async query<T = unknown>(sql: string, options?: QueryOptions): Promise<T[]> {
 		console.log("Executing query:", sql.substring(0, 100));
 		return [] as T[];
 	}
