@@ -2,7 +2,7 @@ import { schedule } from "node-cron";
 import type { AutomationConfig } from "./types";
 
 export async function scheduleAutomation(
-	config: AutomationConfig,
+	_config: AutomationConfig,
 	interval: string,
 	processor: Function,
 	input: unknown,
