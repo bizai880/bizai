@@ -1,11 +1,11 @@
 // تغيير الامتداد إلى .tsx أو إصلاح بناء الجملة
-export const Check = (props: any) => <span>{'\u2713'}</span>;
-export const X = (props: any) => <span>{'\u2717'}</span>;
-export const ArrowRight = (props: any) => <span>{'\u2192'}</span>;
-export const Star = (props: any) => <span>{'\u2605'}</span>;
-export const Zap = (props: any) => <span>{'\u26A1'}</span>;
-export const Users = (props: any) => <span>{'\u{1F465}'}</span>;
-export const Shield = (props: any) => <span>{'\u{1F6E1}\uFE0F'}</span>;
-export const CreditCard = (props: any) => <span>{'\u{1F4B3}'}</span>;
-export const CheckCircle = (props: any) => <span>{'\u2705'}</span>;
-export const XCircle = (props: any) => <span>{'\u274C'}</span>;
+export const Check = (props: any) => <span>{"\u2713"}</span>;
+export const X = (props: any) => <span>{"\u2717"}</span>;
+export const ArrowRight = (props: any) => <span>{"\u2192"}</span>;
+export const Star = (props: any) => <span>{"\u2605"}</span>;
+export const Zap = (props: any) => <span>{"\u26A1"}</span>;
+export const Users = (props: any) => <span>{"\u{1F465}"}</span>;
+export const Shield = (props: any) => <span>{"\u{1F6E1}\uFE0F"}</span>;
+export const CreditCard = (props: any) => <span>{"\u{1F4B3}"}</span>;
+export const CheckCircle = (props: any) => <span>{"\u2705"}</span>;
+export const XCircle = (props: any) => <span>{"\u274C"}</span>;
