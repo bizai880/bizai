@@ -6,7 +6,7 @@ import type {
 
 export abstract class BaseCube {
 	public metadata: CubeMetadata;
-	protected cache: Map<string, any> = new Map();
+	protected cache: Map<string, unknown> = new Map();
 
 	constructor(metadata: Partial<CubeMetadata>) {
 		this.metadata = {
@@ -28,7 +28,7 @@ export abstract class BaseCube {
 	}
 
 	abstract initialize(): Promise<void>;
-	abstract process(input: any): Promise<any>;
+	abstract process(input: unknown): Promise<unknown>;
 
 	async execute(input: CubeExecutionInput): Promise<CubeExecutionResult> {
 		const startTime = Date.now();
@@ -74,14 +74,14 @@ export abstract class BaseCube {
 		}
 	}
 
-	protected validateInput(data: any): void {
+	protected validateInput(data: unknown): void {
 		// التحقق الأساسي - يمكن توسيعها
 		if (!data) {
 			throw new Error("Input data is required");
 		}
 	}
 
-	protected generateCacheKey(data: any): string {
+	protected generateCacheKey(data: unknown): string {
 		return JSON.stringify(data);
 	}
 }
