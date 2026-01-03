@@ -1,7 +1,7 @@
 // Simple in-memory cache system
 
 interface CacheItem {
-	value: any;
+	value: unknown;
 	expiresAt: number | null;
 }
 
@@ -23,7 +23,7 @@ class MemoryCache {
 		return item.value as T;
 	}
 
-	async set(key: string, value: any, ttlMs?: number): Promise<void> {
+	async set(key: string, value: unknown, ttlMs?: number): Promise<void> {
 		const expiresAt = ttlMs ? Date.now() + ttlMs : null;
 		this.store.set(key, { value, expiresAt });
 	}
