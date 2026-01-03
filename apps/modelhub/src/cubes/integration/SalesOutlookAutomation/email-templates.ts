@@ -117,7 +117,7 @@ export function generateDeliveryAlertEmail(record: SalesRecord): string {
                     <div class="detail-row">
                         <div class="detail-label">عدد أيام التأخير:</div>
                         <div class="detail-value">
-                        ${Math.floor((Date.now() - newDate(record.expectedDeliveryDate).getTime()) / (1000 * 60 * 60 * 24))}يوم
+                        ${Math.floor((Date.now()-new Date(record.expectedDeliveryDate).getTime())/(1000*60*60*24))}يوم
                         </div>
                     </div>
                 </div>
