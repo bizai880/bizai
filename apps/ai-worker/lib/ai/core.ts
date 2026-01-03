@@ -7,7 +7,7 @@ export interface AIRequest {
 
 export interface AIResponse {
 	success: boolean;
-	data?: any;
+	data?: unknown;
 	error?: string;
 	usage?: {
 		promptTokens: number;
