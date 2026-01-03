@@ -4,7 +4,7 @@ import * as faceapi from "face-api.js";
 import { BaseCube } from "../../../core/BaseCube";
 
 export class FaceRecognitionCube extends BaseCube {
-	private model: any;
+	private model: unknown;
 
 	constructor() {
 		super({
@@ -72,7 +72,7 @@ export class FaceRecognitionCube extends BaseCube {
 		console.log("✅ Face Recognition cube initialized");
 	}
 
-	async process(input: any): Promise<any> {
+	async process(input: unknown): Promise<unknown> {
 		const { image, mode = "detect", referenceFace } = input;
 
 		// تحميل الصورة
@@ -83,7 +83,7 @@ export class FaceRecognitionCube extends BaseCube {
 
 		// اكتشاف الوجوه
 		const detections = await faceapi
-			.detectAllFaces(canvas as any)
+			.detectAllFaces(canvas as unknown)
 			.withFaceLandmarks()
 			.withFaceDescriptors();
 
