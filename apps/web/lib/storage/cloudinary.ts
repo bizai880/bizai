@@ -1,164 +1,170 @@
-import { v2 as cloudinary, UploadApiErrorResponse, type UploadApiResponse } from 'cloudinary'
+import {
+	v2 as cloudinary,
+	UploadApiErrorResponse,
+	type UploadApiResponse,
+} from "cloudinary";
 
 // تكوين Cloudinary
 cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: process.env.NODE_ENV === 'production'
-})
+	cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+	api_key: process.env.CLOUDINARY_API_KEY,
+	api_secret: process.env.CLOUDINARY_API_SECRET,
+	secure: process.env.NODE_ENV === "production",
+});
 
 export interface UploadOptions {
-  folder?: string
-  public_id?: string
-  resource_type?: 'image' | 'video' | 'raw' | 'auto'
-  format?: string
-  transformation?: any[]
-  tags?: string[]
-  context?: Record<string, string>
+	folder?: string;
+	public_id?: string;
+	resource_type?: "image" | "video" | "raw" | "auto";
+	format?: string;
+	transformation?: any[];
+	tags?: string[];
+	context?: Record<string, string>;
 }
 
 export interface UploadResult {
-  url: string
-  secure_url: string
-  public_id: string
-  format: string
-  resource_type: string
-  bytes: number
-  width?: number
-  height?: number
-  created_at: string
-  etag: string
-  signature: string
+	url: string;
+	secure_url: string;
+	public_id: string;
+	format: string;
+	resource_type: string;
+	bytes: number;
+	width?: number;
+	height?: number;
+	created_at: string;
+	etag: string;
+	signature: string;
 }
 
 export interface CloudinaryConfig {
-  cloudName: string
-  apiKey: string
-  apiSecret: string
+	cloudName: string;
+	apiKey: string;
+	apiSecret: string;
 }
 
 export class CloudinaryService {
-  private config: CloudinaryConfig
+	private config: CloudinaryConfig;
 
-  constructor(config?: CloudinaryConfig) {
-    this.config = config || {
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
-      apiKey: process.env.CLOUDINARY_API_KEY!,
-      apiSecret: process.env.CLOUDINARY_API_SECRET!
-    }
+	constructor(config?: CloudinaryConfig) {
+		this.config = config || {
+			cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
+			apiKey: process.env.CLOUDINARY_API_KEY!,
+			apiSecret: process.env.CLOUDINARY_API_SECRET!,
+		};
 
-    this.validateConfig()
-  }
+		this.validateConfig();
+	}
 
-  private validateConfig(): void {
-    const { cloudName, apiKey, apiSecret } = this.config
-    if (!cloudName || !apiKey || !apiSecret) {
-      throw new Error('Cloudinary configuration is missing. Please check environment variables.')
-    }
-  }
+	private validateConfig(): void {
+		const { cloudName, apiKey, apiSecret } = this.config;
+		if (!cloudName || !apiKey || !apiSecret) {
+			throw new Error(
+				"Cloudinary configuration is missing. Please check environment variables.",
+			);
+		}
+	}
 
-  /**
-   * رفع ملف إلى Cloudinary
-   */
-  async uploadFile(
-    file: Buffer | string,
-    fileName: string,
-    options: UploadOptions = {}
-  ): Promise<UploadResult> {
-    try {
-      const uploadOptions: any = {
-        folder: options.folder || 'bizai',
-        public_id: options.public_id || this.generatePublicId(fileName),
-        resource_type: options.resource_type || 'auto',
-        tags: ['bizai', 'generated', ...(options.tags || [])],
-        context: {
-          source: 'bizai-ai-factory',
-          uploaded_at: new Date().toISOString(),
-          ...options.context
-        }
-      }
+	/**
+	 * رفع ملف إلى Cloudinary
+	 */
+	async uploadFile(
+		file: Buffer | string,
+		fileName: string,
+		options: UploadOptions = {},
+	): Promise<UploadResult> {
+		try {
+			const uploadOptions: any = {
+				folder: options.folder || "bizai",
+				public_id: options.public_id || this.generatePublicId(fileName),
+				resource_type: options.resource_type || "auto",
+				tags: ["bizai", "generated", ...(options.tags || [])],
+				context: {
+					source: "bizai-ai-factory",
+					uploaded_at: new Date().toISOString(),
+					...options.context,
+				},
+			};
 
-      // إذا كان الملف عبارة عن URL
-      if (typeof file === 'string' && file.startsWith('http')) {
-        const result = await cloudinary.uploader.upload(file, uploadOptions)
-        return this.formatUploadResult(result)
-      }
+			// إذا كان الملف عبارة عن URL
+			if (typeof file === "string" && file.startsWith("http")) {
+				const result = await cloudinary.uploader.upload(file, uploadOptions);
+				return this.formatUploadResult(result);
+			}
 
-      // إذا كان الملف عبارة عن Buffer
-      const base64Data = file.toString('base64')
-      const dataUri = `data:${options.format || 'application/octet-stream'};base64,${base64Data}`
+			// إذا كان الملف عبارة عن Buffer
+			const base64Data = file.toString("base64");
+			const dataUri = `data:${options.format || "application/octet-stream"};base64,${base64Data}`;
 
-      const result = await cloudinary.uploader.upload(dataUri, uploadOptions)
-      return this.formatUploadResult(result)
-    } catch (error: any) {
-      console.error('Cloudinary upload error:', error)
-      throw new Error(`Failed to upload file: ${error.message || 'Unknown error'}`)
-    }
-  }
+			const result = await cloudinary.uploader.upload(dataUri, uploadOptions);
+			return this.formatUploadResult(result);
+		} catch (error: any) {
+			console.error("Cloudinary upload error:", error);
+			throw new Error(
+				`Failed to upload file: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-  /**
-   * رفع ملف Excel خاص
-   */
-  async uploadExcelFile(
-    excelBuffer: Buffer,
-    userId: string,
-    requestId: string,
-    description?: string
-  ): Promise<UploadResult> {
-    const fileName = `excel/${userId}/${requestId}-${Date.now()}.xlsx`
-    
-    const result = await this.uploadFile(
-      excelBuffer,
-      fileName,
-      {
-        folder: `bizai/excel/${userId}`,
-        resource_type: 'raw',
-        format: 'xlsx',
-        context: {
-          user_id: userId,
-          request_id: requestId,
-          description: description || 'Excel file generated by BizAI',
-          type: 'excel',
-          generated_at: new Date().toISOString()
-        },
-        tags: ['excel', 'generated', 'business', userId]
-      }
-    )
+	/**
+	 * رفع ملف Excel خاص
+	 */
+	async uploadExcelFile(
+		excelBuffer: Buffer,
+		userId: string,
+		requestId: string,
+		description?: string,
+	): Promise<UploadResult> {
+		const fileName = `excel/${userId}/${requestId}-${Date.now()}.xlsx`;
 
-    // إنشاء نسخة مصغرة للعرض
-    await this.createThumbnail(result.public_id)
+		const result = await this.uploadFile(excelBuffer, fileName, {
+			folder: `bizai/excel/${userId}`,
+			resource_type: "raw",
+			format: "xlsx",
+			context: {
+				user_id: userId,
+				request_id: requestId,
+				description: description || "Excel file generated by BizAI",
+				type: "excel",
+				generated_at: new Date().toISOString(),
+			},
+			tags: ["excel", "generated", "business", userId],
+		});
 
-    return result
-  }
+		// إنشاء نسخة مصغرة للعرض
+		await this.createThumbnail(result.public_id);
 
-  /**
-   * رفع صورة
-   */
-  async uploadImage(
-    imageBuffer: Buffer,
-    fileName: string,
-    options: UploadOptions = {}
-  ): Promise<UploadResult> {
-    return this.uploadFile(imageBuffer, fileName, {
-      folder: options.folder || 'bizai/images',
-      resource_type: 'image',
-      format: options.format || 'auto',
-      transformation: [
-        { quality: 'auto', fetch_format: 'auto' },
-        ...(options.transformation || [])
-      ]
-    })
-  }
+		return result;
+	}
 
-export async function uploadProductImage(
-  imageBuffer: Buffer,
-  productId: string,
-  productName: string
-): Promise<UploadResult> {
-  const fileName = `products/${productId}-${Date.now()}`;
-  
-  const result = await cloudinaryService.uploadImage(imageBuffer, fileName, {
+	/**
+	 * رفع صورة
+	 */
+	async uploadImage(
+		imageBuffer: Buffer,
+		fileName: string,
+		options: UploadOptions = {},
+	): Promise<UploadResult> {
+		return this.uploadFile(imageBuffer, fileName, {
+			folder: options.folder || "bizai/images",
+			resource_type: "image",
+			format: options.format || "auto",
+			transformation: [
+				{ quality: "auto", fetch_format: "auto" },
+				...(options.transformation || []),
+			],
+		});
+	}
+
+	export;
+	async function
+	uploadProductImage(
+		imageBuffer: Buffer,
+		productId: string,
+		productName: string,
+	): Promise<UploadResult> {
+		const fileName = `products/${productId}-${Date.now()}`;
+
+		const result = await cloudinaryService.uploadImage(imageBuffer, fileName, {
     folder: 'bizai/products',
     context: {
       product_id: productId,
@@ -173,374 +179,411 @@ export async function uploadProductImage(
     tags: ['product', 'ai-generated', productId]
   });
 
-  return result;
-}
+		return result;
+	}
 
-  /**
-   * إنشاء رابط توقيع للرفع المباشر من المتصفح
-   */
-  async generateUploadSignature(folder: string = 'bizai/uploads'): Promise<{
-    signature: string
-    timestamp: number
-    cloudName: string
-    apiKey: string
-    folder: string
-  }> {
-    const timestamp = Math.round(Date.now() / 1000)
-    
-    const params = {
-      timestamp,
-      folder
-    }
+	/**
+	 * إنشاء رابط توقيع للرفع المباشر من المتصفح
+	 */
+	async generateUploadSignature(folder: string = "bizai/uploads"): Promise<{
+		signature: string;
+		timestamp: number;
+		cloudName: string;
+		apiKey: string;
+		folder: string;
+	}> {
+		const timestamp = Math.round(Date.now() / 1000);
 
-    const signature = cloudinary.utils.api_sign_request(
-      params,
-      this.config.apiSecret
-    )
+		const params = {
+			timestamp,
+			folder,
+		};
 
-    return {
-      signature,
-      timestamp,
-      cloudName: this.config.cloudName,
-      apiKey: this.config.apiKey,
-      folder
-    }
-  }
+		const signature = cloudinary.utils.api_sign_request(
+			params,
+			this.config.apiSecret,
+		);
 
-  /**
-   * حذف ملف من Cloudinary
-   */
-  async deleteFile(publicId: string): Promise<boolean> {
-    try {
-      const result = await cloudinary.uploader.destroy(publicId)
-      return result.result === 'ok'
-    } catch (error: any) {
-      console.error('Cloudinary delete error:', error)
-      throw new Error(`Failed to delete file: ${error.message || 'Unknown error'}`)
-    }
-  }
+		return {
+			signature,
+			timestamp,
+			cloudName: this.config.cloudName,
+			apiKey: this.config.apiKey,
+			folder,
+		};
+	}
 
-  /**
-   * حذف عدة ملفات
-   */
-  async deleteMultipleFiles(publicIds: string[]): Promise<boolean> {
-    try {
-      const result = await cloudinary.api.delete_resources(publicIds)
-      return Object.values(result.deleted).every(status => status === 'deleted')
-    } catch (error: any) {
-      console.error('Cloudinary delete multiple error:', error)
-      throw new Error(`Failed to delete files: ${error.message || 'Unknown error'}`)
-    }
-  }
+	/**
+	 * حذف ملف من Cloudinary
+	 */
+	async deleteFile(publicId: string): Promise<boolean> {
+		try {
+			const result = await cloudinary.uploader.destroy(publicId);
+			return result.result === "ok";
+		} catch (error: any) {
+			console.error("Cloudinary delete error:", error);
+			throw new Error(
+				`Failed to delete file: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-  /**
-   * البحث عن الملفات
-   */
-  async searchFiles(query: string, options: {
-    folder?: string
-    maxResults?: number
-    resourceType?: string
-  } = {}): Promise<UploadResult[]> {
-    try {
-      const searchResult = await cloudinary.search
-        .expression(query)
-        .max_results(options.maxResults || 20)
-        .execute()
+	/**
+	 * حذف عدة ملفات
+	 */
+	async deleteMultipleFiles(publicIds: string[]): Promise<boolean> {
+		try {
+			const result = await cloudinary.api.delete_resources(publicIds);
+			return Object.values(result.deleted).every(
+				(status) => status === "deleted",
+			);
+		} catch (error: any) {
+			console.error("Cloudinary delete multiple error:", error);
+			throw new Error(
+				`Failed to delete files: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-      return searchResult.resources.map((resource: any) => 
-        this.formatSearchResult(resource)
-      )
-    } catch (error: any) {
-      console.error('Cloudinary search error:', error)
-      throw new Error(`Failed to search files: ${error.message || 'Unknown error'}`)
-    }
-  }
+	/**
+	 * البحث عن الملفات
+	 */
+	async searchFiles(
+		query: string,
+		options: {
+			folder?: string;
+			maxResults?: number;
+			resourceType?: string;
+		} = {},
+	): Promise<UploadResult[]> {
+		try {
+			const searchResult = await cloudinary.search
+				.expression(query)
+				.max_results(options.maxResults || 20)
+				.execute();
 
-  /**
-   * إنشاء نسخة مصغرة من ملف
-   */
-  async createThumbnail(publicId: string, width: number = 300, height: number = 200): Promise<string> {
-    try {
-      const thumbnailUrl = cloudinary.url(publicId, {
-        width,
-        height,
-        crop: 'fill',
-        quality: 'auto',
-        format: 'jpg'
-      })
+			return searchResult.resources.map((resource: any) =>
+				this.formatSearchResult(resource),
+			);
+		} catch (error: any) {
+			console.error("Cloudinary search error:", error);
+			throw new Error(
+				`Failed to search files: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-      return thumbnailUrl
-    } catch (error: any) {
-      console.error('Cloudinary thumbnail error:', error)
-      throw new Error(`Failed to create thumbnail: ${error.message || 'Unknown error'}`)
-    }
-  }
+	/**
+	 * إنشاء نسخة مصغرة من ملف
+	 */
+	async createThumbnail(
+		publicId: string,
+		width: number = 300,
+		height: number = 200,
+	): Promise<string> {
+		try {
+			const thumbnailUrl = cloudinary.url(publicId, {
+				width,
+				height,
+				crop: "fill",
+				quality: "auto",
+				format: "jpg",
+			});
 
-  /**
-   * توليد رابط محسن للعرض
-   */
-  generateOptimizedUrl(publicId: string, options: {
-    width?: number
-    height?: number
-    quality?: number
-    format?: string
-  } = {}): string {
-    return cloudinary.url(publicId, {
-      width: options.width,
-      height: options.height,
-      crop: 'limit',
-      quality: options.quality || 'auto',
-      format: options.format || 'auto',
-      fetch_format: 'auto'
-    })
-  }
+			return thumbnailUrl;
+		} catch (error: any) {
+			console.error("Cloudinary thumbnail error:", error);
+			throw new Error(
+				`Failed to create thumbnail: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-  /**
-   * التحقق من وجود الملف
-   */
-  async fileExists(publicId: string): Promise<boolean> {
-    try {
-      const result = await cloudinary.api.resource(publicId)
-      return !!result.public_id
-    } catch (error: any) {
-      if (error.http_code === 404) {
-        return false
-      }
-      throw error
-    }
-  }
+	/**
+	 * توليد رابط محسن للعرض
+	 */
+	generateOptimizedUrl(
+		publicId: string,
+		options: {
+			width?: number;
+			height?: number;
+			quality?: number;
+			format?: string;
+		} = {},
+	): string {
+		return cloudinary.url(publicId, {
+			width: options.width,
+			height: options.height,
+			crop: "limit",
+			quality: options.quality || "auto",
+			format: options.format || "auto",
+			fetch_format: "auto",
+		});
+	}
 
-  /**
-   * جلب معلومات الملف
-   */
-  async getFileInfo(publicId: string): Promise<UploadResult | null> {
-    try {
-      const result = await cloudinary.api.resource(publicId)
-      return this.formatUploadResult(result)
-    } catch (error: any) {
-      if (error.http_code === 404) {
-        return null
-      }
-      throw error
-    }
-  }
+	/**
+	 * التحقق من وجود الملف
+	 */
+	async fileExists(publicId: string): Promise<boolean> {
+		try {
+			const result = await cloudinary.api.resource(publicId);
+			return !!result.public_id;
+		} catch (error: any) {
+			if (error.http_code === 404) {
+				return false;
+			}
+			throw error;
+		}
+	}
 
-  /**
-   * تحديث معلومات الملف
-   */
-  async updateFileMetadata(
-    publicId: string,
-    metadata: Record<string, string>
-  ): Promise<boolean> {
-    try {
-      const result = await cloudinary.uploader.explicit(publicId, {
-        type: 'upload',
-        context: metadata,
-        invalidate: true
-      })
-      return !!result.public_id
-    } catch (error: any) {
-      console.error('Cloudinary update metadata error:', error)
-      throw new Error(`Failed to update file metadata: ${error.message || 'Unknown error'}`)
-    }
-  }
+	/**
+	 * جلب معلومات الملف
+	 */
+	async getFileInfo(publicId: string): Promise<UploadResult | null> {
+		try {
+			const result = await cloudinary.api.resource(publicId);
+			return this.formatUploadResult(result);
+		} catch (error: any) {
+			if (error.http_code === 404) {
+				return null;
+			}
+			throw error;
+		}
+	}
 
-  /**
-   * إنشاء رابط تحميل آمن
-   */
-  generateSecureUrl(publicId: string, expiresInSeconds: number = 3600): string {
-    const expiresAt = Math.floor(Date.now() / 1000) + expiresInSeconds
-    
-    const url = cloudinary.url(publicId, {
-      secure: true,
-      sign_url: true,
-      type: 'authenticated',
-      expires_at: expiresAt
-    })
+	/**
+	 * تحديث معلومات الملف
+	 */
+	async updateFileMetadata(
+		publicId: string,
+		metadata: Record<string, string>,
+	): Promise<boolean> {
+		try {
+			const result = await cloudinary.uploader.explicit(publicId, {
+				type: "upload",
+				context: metadata,
+				invalidate: true,
+			});
+			return !!result.public_id;
+		} catch (error: any) {
+			console.error("Cloudinary update metadata error:", error);
+			throw new Error(
+				`Failed to update file metadata: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-    return url
-  }
+	/**
+	 * إنشاء رابط تحميل آمن
+	 */
+	generateSecureUrl(publicId: string, expiresInSeconds: number = 3600): string {
+		const expiresAt = Math.floor(Date.now() / 1000) + expiresInSeconds;
 
-  /**
-   * تنظيف الملفات القديمة
-   */
-  async cleanupOldFiles(daysOld: number = 30, folder?: string): Promise<number> {
-    try {
-      const cutoffDate = new Date()
-      cutoffDate.setDate(cutoffDate.getDate() - daysOld)
-      
-      const expression = folder 
-        ? `folder=${folder} AND uploaded_at<${Math.floor(cutoffDate.getTime() / 1000)}`
-        : `uploaded_at<${Math.floor(cutoffDate.getTime() / 1000)}`
+		const url = cloudinary.url(publicId, {
+			secure: true,
+			sign_url: true,
+			type: "authenticated",
+			expires_at: expiresAt,
+		});
 
-      const oldFiles = await cloudinary.search
-        .expression(expression)
-        .max_results(100)
-        .execute()
+		return url;
+	}
 
-      if (oldFiles.resources.length === 0) {
-        return 0
-      }
+	/**
+	 * تنظيف الملفات القديمة
+	 */
+	async cleanupOldFiles(
+		daysOld: number = 30,
+		folder?: string,
+	): Promise<number> {
+		try {
+			const cutoffDate = new Date();
+			cutoffDate.setDate(cutoffDate.getDate() - daysOld);
 
-      const publicIds = oldFiles.resources.map((file: any) => file.public_id)
-      await this.deleteMultipleFiles(publicIds)
+			const expression = folder
+				? `folder=${folder} AND uploaded_at<${Math.floor(cutoffDate.getTime() / 1000)}`
+				: `uploaded_at<${Math.floor(cutoffDate.getTime() / 1000)}`;
 
-      return publicIds.length
-    } catch (error: any) {
-      console.error('Cloudinary cleanup error:', error)
-      throw new Error(`Failed to cleanup old files: ${error.message || 'Unknown error'}`)
-    }
-  }
+			const oldFiles = await cloudinary.search
+				.expression(expression)
+				.max_results(100)
+				.execute();
 
-  /**
-   * تحويل النتيجة من Cloudinary إلى تنسيق موحد
-   */
-  private formatUploadResult(result: UploadApiResponse): UploadResult {
-    return {
-      url: result.url,
-      secure_url: result.secure_url,
-      public_id: result.public_id,
-      format: result.format,
-      resource_type: result.resource_type,
-      bytes: result.bytes,
-      width: result.width,
-      height: result.height,
-      created_at: result.created_at,
-      etag: result.etag,
-      signature: result.signature
-    }
-  }
+			if (oldFiles.resources.length === 0) {
+				return 0;
+			}
 
-  /**
-   * تحويل نتيجة البحث إلى تنسيق موحد
-   */
-  private formatSearchResult(resource: any): UploadResult {
-    return {
-      url: resource.url,
-      secure_url: resource.secure_url,
-      public_id: resource.public_id,
-      format: resource.format,
-      resource_type: resource.resource_type,
-      bytes: resource.bytes,
-      width: resource.width,
-      height: resource.height,
-      created_at: resource.created_at,
-      etag: resource.etag,
-      signature: resource.signature
-    }
-  }
+			const publicIds = oldFiles.resources.map((file: any) => file.public_id);
+			await this.deleteMultipleFiles(publicIds);
 
-  /**
-   * توليد معرف فريد للملف
-   */
-  private generatePublicId(fileName: string): string {
-    const timestamp = Date.now()
-    const random = Math.random().toString(36).substring(2, 8)
-    const sanitizedName = fileName
-      .replace(/\.[^/.]+$/, '')
-      .replace(/[^a-zA-Z0-9-_]/g, '-')
-      .toLowerCase()
-    
-    return `${sanitizedName}-${timestamp}-${random}`
-  }
+			return publicIds.length;
+		} catch (error: any) {
+			console.error("Cloudinary cleanup error:", error);
+			throw new Error(
+				`Failed to cleanup old files: ${error.message || "Unknown error"}`,
+			);
+		}
+	}
 
-  /**
-   * توليد رابط خاص بالعرض
-   */
-  generateDisplayUrl(publicId: string, options: {
-    width?: number
-    height?: number
-    format?: string
-  } = {}): string {
-    return cloudinary.url(publicId, {
-      width: options.width || 800,
-      height: options.height || 600,
-      crop: 'fit',
-      quality: 'auto',
-      format: options.format || 'auto',
-      fetch_format: 'auto'
-    })
-  }
+	/**
+	 * تحويل النتيجة من Cloudinary إلى تنسيق موحد
+	 */
+	private formatUploadResult(result: UploadApiResponse): UploadResult {
+		return {
+			url: result.url,
+			secure_url: result.secure_url,
+			public_id: result.public_id,
+			format: result.format,
+			resource_type: result.resource_type,
+			bytes: result.bytes,
+			width: result.width,
+			height: result.height,
+			created_at: result.created_at,
+			etag: result.etag,
+			signature: result.signature,
+		};
+	}
 
-  /**
-   * تحليل public_id لاستخراج المعلومات
-   */
-  parsePublicId(publicId: string): {
-    folder?: string
-    filename: string
-    userId?: string
-    requestId?: string
-    timestamp?: number
-  } {
-    const parts = publicId.split('/')
-    const filename = parts.pop() || ''
-    
-    const result: any = {
-      filename,
-      folder: parts.length > 0 ? parts.join('/') : undefined
-    }
+	/**
+	 * تحويل نتيجة البحث إلى تنسيق موحد
+	 */
+	private formatSearchResult(resource: any): UploadResult {
+		return {
+			url: resource.url,
+			secure_url: resource.secure_url,
+			public_id: resource.public_id,
+			format: resource.format,
+			resource_type: resource.resource_type,
+			bytes: resource.bytes,
+			width: resource.width,
+			height: resource.height,
+			created_at: resource.created_at,
+			etag: resource.etag,
+			signature: resource.signature,
+		};
+	}
 
-    // محاولة استخراج المعلومات من الاسم
-    const match = filename.match(/(.+?)-(\d+)-([a-z0-9]+)/)
-    if (match) {
-      const [, baseName, timestamp] = match
-      result.timestamp = parseInt(timestamp, 10)
-      
-      // التحقق إذا كان الاسم يحتوي على userId و requestId
-      const userMatch = baseName.match(/excel\/([^/]+)\/([^/]+)/)
-      if (userMatch) {
-        result.userId = userMatch[1]
-        result.requestId = userMatch[2]
-      }
-    }
+	/**
+	 * توليد معرف فريد للملف
+	 */
+	private generatePublicId(fileName: string): string {
+		const timestamp = Date.now();
+		const random = Math.random().toString(36).substring(2, 8);
+		const sanitizedName = fileName
+			.replace(/\.[^/.]+$/, "")
+			.replace(/[^a-zA-Z0-9-_]/g, "-")
+			.toLowerCase();
 
-    return result
-  }
+		return `${sanitizedName}-${timestamp}-${random}`;
+	}
+
+	/**
+	 * توليد رابط خاص بالعرض
+	 */
+	generateDisplayUrl(
+		publicId: string,
+		options: {
+			width?: number;
+			height?: number;
+			format?: string;
+		} = {},
+	): string {
+		return cloudinary.url(publicId, {
+			width: options.width || 800,
+			height: options.height || 600,
+			crop: "fit",
+			quality: "auto",
+			format: options.format || "auto",
+			fetch_format: "auto",
+		});
+	}
+
+	/**
+	 * تحليل public_id لاستخراج المعلومات
+	 */
+	parsePublicId(publicId: string): {
+		folder?: string;
+		filename: string;
+		userId?: string;
+		requestId?: string;
+		timestamp?: number;
+	} {
+		const parts = publicId.split("/");
+		const filename = parts.pop() || "";
+
+		const result: any = {
+			filename,
+			folder: parts.length > 0 ? parts.join("/") : undefined,
+		};
+
+		// محاولة استخراج المعلومات من الاسم
+		const match = filename.match(/(.+?)-(\d+)-([a-z0-9]+)/);
+		if (match) {
+			const [, baseName, timestamp] = match;
+			result.timestamp = parseInt(timestamp, 10);
+
+			// التحقق إذا كان الاسم يحتوي على userId و requestId
+			const userMatch = baseName.match(/excel\/([^/]+)\/([^/]+)/);
+			if (userMatch) {
+				result.userId = userMatch[1];
+				result.requestId = userMatch[2];
+			}
+		}
+
+		return result;
+	}
 }
 
 // تصدير نسخة مفردة (singleton) من الخدمة
-export const cloudinaryService = new CloudinaryService()
+export const cloudinaryService = new CloudinaryService();
 
 // دالة مساعدة للاستخدام المباشر
 export async function uploadToCloudinary(
-  file: Buffer | string,
-  fileName: string,
-  contentType?: string
+	file: Buffer | string,
+	fileName: string,
+	contentType?: string,
 ): Promise<string> {
-  const options: UploadOptions = {
-    folder: 'bizai/uploads'
-  }
+	const options: UploadOptions = {
+		folder: "bizai/uploads",
+	};
 
-  if (contentType) {
-    if (contentType.startsWith('image/')) {
-      options.resource_type = 'image'
-    } else if (contentType.includes('spreadsheet') || contentType.includes('excel')) {
-      options.resource_type = 'raw'
-      options.format = 'xlsx'
-    } else if (contentType.includes('pdf')) {
-      options.resource_type = 'raw'
-      options.format = 'pdf'
-    }
-  }
+	if (contentType) {
+		if (contentType.startsWith("image/")) {
+			options.resource_type = "image";
+		} else if (
+			contentType.includes("spreadsheet") ||
+			contentType.includes("excel")
+		) {
+			options.resource_type = "raw";
+			options.format = "xlsx";
+		} else if (contentType.includes("pdf")) {
+			options.resource_type = "raw";
+			options.format = "pdf";
+		}
+	}
 
-  const result = await cloudinaryService.uploadFile(file, fileName, options)
-  return result.secure_url
+	const result = await cloudinaryService.uploadFile(file, fileName, options);
+	return result.secure_url;
 }
 
 // دالة لرفع ملف Excel مباشرة
 export async function uploadExcelToCloudinary(
-  excelBuffer: Buffer,
-  userId: string,
-  requestId: string
+	excelBuffer: Buffer,
+	userId: string,
+	requestId: string,
 ): Promise<string> {
-  const result = await cloudinaryService.uploadExcelFile(excelBuffer, userId, requestId)
-  return result.secure_url
+	const result = await cloudinaryService.uploadExcelFile(
+		excelBuffer,
+		userId,
+		requestId,
+	);
+	return result.secure_url;
 }
 
 // دالة للحصول على رابط مصغر
 export function getThumbnailUrl(publicId: string): string {
-  return cloudinaryService.createThumbnail(publicId)
+	return cloudinaryService.createThumbnail(publicId);
 }
 
 // تصدير مكتبة Cloudinary الأساسية للاستخدام المباشر
-export { cloudinary }
+export { cloudinary };
