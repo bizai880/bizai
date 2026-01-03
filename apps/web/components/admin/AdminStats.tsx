@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart3, CreditCard, TrendingDown, TrendingUp, Users, Zap } from 'lucide-react',
+import { BarChart3, CreditCard, TrendingDown, TrendingUp, Users, Zap } from 'lucide-react';
 
 import dynamic from 'next/dynamic';
 
