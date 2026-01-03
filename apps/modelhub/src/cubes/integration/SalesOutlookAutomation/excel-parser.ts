@@ -34,7 +34,7 @@ export async function parseExcelFile(
 		const data = XLSX.utils.sheet_to_json(worksheet);
 
 		// تحويل البيانات إلى SalesRecord
-		const records: SalesRecord[] = data.map((row: unknown, index: number) => {
+		const records: SalesRecord[] = data.map((row: unknown, _index: number) => {
 			// البحث عن الأعمدة بأسماء مختلفة
 			const findColumn = (possibleNames: string[]): unknown => {
 				for (const name of possibleNames) {
