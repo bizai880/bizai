@@ -4,7 +4,6 @@ import {
 	Copy,
 	Download,
 	Eye,
-	Filter,
 	MoreVertical,
 	RefreshCw,
 	Search,
@@ -130,8 +129,7 @@ export function CubeLibrary({
 
 	const handleDownloadCube = (cube: CubeDefinition) => {
 		const dataStr = JSON.stringify(cube, null, 2);
-		const dataUri =
-			"data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+		const dataUri = `data:application/json;charset=utf-8,${encodeURIComponent(dataStr)}`;
 
 		const exportFileDefaultName = `${cube.name.replace(/\s+/g, "_")}.json`;
 

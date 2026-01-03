@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 // Simple notifications API without supabase dependency
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
 	return NextResponse.json({
 		success: true,
 		notifications: [
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 			data: body,
 			timestamp: new Date().toISOString(),
 		});
-	} catch (error) {
+	} catch (_error) {
 		return NextResponse.json(
 			{ success: false, error: "Invalid request" },
 			{ status: 400 },

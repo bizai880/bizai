@@ -20,7 +20,7 @@ export default function ProtectedRoute({
 	useEffect(() => {
 		if (!isLoading && !user) {
 			router.push(
-				"/auth/login?redirect=" + encodeURIComponent(window.location.pathname),
+				`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`,
 			);
 		}
 	}, [user, isLoading, router]);

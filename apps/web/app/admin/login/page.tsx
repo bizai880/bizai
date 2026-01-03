@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
 						router.push("/admin");
 					}
 				}
-			} catch (err) {
+			} catch (_err) {
 				console.log("Not authenticated or error checking auth");
 			} finally {
 				setIsCheckingAuth(false);

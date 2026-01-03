@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	AlertCircle,
 	AlertTriangle,
 	Check,
 	CheckCircle,
@@ -14,7 +13,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useNotifications } from "./NotificationProvider";
 
-const MotionDiv = dynamic(
+const _MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );

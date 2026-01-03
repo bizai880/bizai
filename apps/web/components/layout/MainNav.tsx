@@ -1,7 +1,6 @@
 "use client";
 
 import {
-	Bell,
 	ChevronDown,
 	HelpCircle,
 	LayoutDashboard,
@@ -18,7 +17,7 @@ import { useState } from "react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import NotificationBell from "@/components/notifications/NotificationBell";
 
-const MotionDiv = dynamic(
+const _MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );

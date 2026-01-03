@@ -1,4 +1,3 @@
-import { BaseCube } from "../../../core/BaseCube";
 import { SalesOutlookAutomationCube } from "./processor";
 
 // تصدير المكعب كافتراضي

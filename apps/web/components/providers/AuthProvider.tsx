@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-	createContext,
-	type ReactNode,
-	useContext,
-	useState,
-} from "react";
+import { createContext, type ReactNode, useContext, useState } from "react";
 
 interface AuthContextType {
 	user: any;
@@ -19,7 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
 	const [user, setUser] = useState<any>(null);
 
-	const login = async (email: string, password: string): Promise<boolean> => {
+	const login = async (email: string, _password: string): Promise<boolean> => {
 		// Mock login
 		console.log("Mock login for:", email);
 		setUser({ email, name: "Test User", role: "admin" });

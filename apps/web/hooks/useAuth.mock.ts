@@ -7,7 +7,7 @@ export function useAuth() {
 			email: "test@example.com",
 			role: "user",
 		},
-		login: async (email: string, password: string) => {
+		login: async (email: string, _password: string) => {
 			console.log("Mock login:", email);
 			return true;
 		},

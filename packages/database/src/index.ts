@@ -23,12 +23,12 @@ export class DatabaseClient {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 	}
 
-	async query<T = unknown>(sql: string, options?: QueryOptions): Promise<T[]> {
+	async query<T = unknown>(sql: string, _options?: QueryOptions): Promise<T[]> {
 		console.log("Executing query:", sql.substring(0, 100));
 		return [] as T[];
 	}
 
-	async execute(sql: string, options?: QueryOptions): Promise<number> {
+	async execute(sql: string, _options?: QueryOptions): Promise<number> {
 		console.log("Executing command:", sql.substring(0, 100));
 		return 0;
 	}

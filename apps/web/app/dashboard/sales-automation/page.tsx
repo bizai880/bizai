@@ -68,7 +68,7 @@ export default function SalesAutomationPage() {
 			} else {
 				toast.error(`فشل التشغيل: ${result.error}`);
 			}
-		} catch (error) {
+		} catch (_error) {
 			toast.error("حدث خطأ أثناء تشغيل الأتمتة");
 		} finally {
 			setIsRunning(false);

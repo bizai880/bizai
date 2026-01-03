@@ -59,7 +59,7 @@ export default function CubeBuilderPage() {
 
 	useEffect(() => {
 		loadCubes();
-	}, []);
+	}, [loadCubes]);
 
 	const loadCubes = async () => {
 		try {
@@ -135,7 +135,7 @@ export default function CubeBuilderPage() {
 			if (result.success) {
 				toast.success("تم اختبار المكعب بنجاح");
 			} else {
-				toast.error("فشل اختبار المكعب: " + result.error);
+				toast.error(`فشل اختبار المكعب: ${result.error}`);
 			}
 		} catch (error) {
 			toast.error("حدث خطأ أثناء الاختبار");

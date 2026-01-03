@@ -7,7 +7,7 @@ export default function AutomationsDashboard() {
 
 	useEffect(() => {
 		fetchAutomations();
-	}, []);
+	}, [fetchAutomations]);
 
 	const fetchAutomations = async () => {
 		const res = await fetch("/api/automations/status");

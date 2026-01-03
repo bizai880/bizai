@@ -1,8 +1,4 @@
-import {
-	v2 as cloudinary,
-	UploadApiErrorResponse,
-	type UploadApiResponse,
-} from "cloudinary";
+import { v2 as cloudinary, type UploadApiResponse } from "cloudinary";
 
 // تكوين Cloudinary
 cloudinary.config({

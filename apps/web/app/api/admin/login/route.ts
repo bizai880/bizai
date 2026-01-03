@@ -194,7 +194,7 @@ export async function GET(request: NextRequest) {
 }
 
 // دالة لتسجيل الخروج
-export async function DELETE(request: NextRequest) {
+export async function DELETE(_request: NextRequest) {
 	const response = NextResponse.json({
 		success: true,
 		message: "تم تسجيل الخروج بنجاح",

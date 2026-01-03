@@ -24,9 +24,7 @@ export interface InngestFunction {
 export class InngestClient {
 	private functions: Map<string, InngestFunction> = new Map();
 
-	constructor(
-		private config: { id: string; name?: string } = { id: "bizai-app" },
-	) {}
+	constructor(_config: { id: string; name?: string } = { id: "bizai-app" }) {}
 
 	createFunction(
 		config: { id: string; name: string },

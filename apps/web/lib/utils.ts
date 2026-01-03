@@ -10,7 +10,7 @@ export const arabicUtils = {
 	// تقطيع النص العربي مع الحفاظ على الاتصال
 	truncate: (text: string, length: number): string => {
 		if (text.length <= length) return text;
-		return text.substring(0, length) + "...";
+		return `${text.substring(0, length)}...`;
 	},
 
 	// تحويل الأرقام إلى عربية
@@ -18,7 +18,7 @@ export const arabicUtils = {
 		const arabicDigits = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
 		return num
 			.toString()
-			.replace(/\d/g, (digit) => arabicDigits[parseInt(digit)]);
+			.replace(/\d/g, (digit) => arabicDigits[parseInt(digit, 10)]);
 	},
 
 	// تنسيق التاريخ العربي

@@ -9,6 +9,6 @@ export function requireAuth() {
 	return true;
 }
 
-export function hasPermission(permission: string) {
+export function hasPermission(_permission: string) {
 	return true;
 }

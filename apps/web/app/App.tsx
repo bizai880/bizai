@@ -47,7 +47,7 @@ if (system.success) {
 	showResultToUser(excelResult);
 }
 
-const App = () => {
+const _App = () => {
 	const cld = new Cloudinary({ cloud: { cloudName: "dsdwgrcyf" } });
 
 	// Use this sample image or upload your own via the Media Library

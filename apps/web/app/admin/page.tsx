@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 
 				const data = await response.json();
 				setUser(data.user);
-			} catch (error) {
+			} catch (_error) {
 				router.push("/admin/login");
 			} finally {
 				setIsLoading(false);

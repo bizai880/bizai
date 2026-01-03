@@ -7,7 +7,6 @@ interface CacheItem {
 
 class MemoryCache {
 	private store = new Map<string, CacheItem>();
-	private defaultTTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
 	async get<T>(key: string): Promise<T | null> {
 		const item = this.store.get(key);

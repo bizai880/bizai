@@ -15,9 +15,9 @@ export interface UploadResult {
 
 export const storageUploader = {
 	uploadFile: async (
-		file: any,
+		_file: any,
 		fileName: string,
-		options?: UploadOptions,
+		_options?: UploadOptions,
 	): Promise<UploadResult> => {
 		console.log("Uploading file:", fileName);
 		return {
@@ -26,12 +26,12 @@ export const storageUploader = {
 		};
 	},
 
-	validateFile: (file: any, options?: UploadOptions) => ({
+	validateFile: (_file: any, _options?: UploadOptions) => ({
 		valid: true,
 		error: undefined,
 	}),
 
-	deleteFile: async (fileKey: string) => ({
+	deleteFile: async (_fileKey: string) => ({
 		success: true,
 	}),
 };

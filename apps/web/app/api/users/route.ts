@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
 		const payload = verifyToken(request);
 		request.headers.set("x-user-id", payload.userId);
 		request.headers.set("x-user-role", payload.role);
-	} catch (error) {
+	} catch (_error) {
 		return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
 	}
 }
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 		// التحقق من صلاحيات المدير
 		requireRole("admin")(request);
 
-		const userId = request.headers.get("x-user-id")!;
+		const _userId = request.headers.get("x-user-id")!;
 		const searchParams = request.nextUrl.searchParams;
 
 		const supabase = await createClient();
@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
 		const status = searchParams.get("status");
 		const subscription = searchParams.get("subscription");
 		const search = searchParams.get("search");
-		const page = parseInt(searchParams.get("page") || "1");
-		const limit = parseInt(searchParams.get("limit") || "20");
+		const page = parseInt(searchParams.get("page") || "1", 10);
+		const limit = parseInt(searchParams.get("limit") || "20", 10);
 		const offset = (page - 1) * limit;
 
 		if (role) query = query.eq("role", role);

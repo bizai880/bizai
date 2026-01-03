@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
 	// المسارات التي تتطلب مصادقة المدير
-	const adminPaths = ["/admin", "/admin/dashboard", "/admin/users"];
+	const _adminPaths = ["/admin", "/admin/dashboard", "/admin/users"];
 
 	// إذا كان المسار يبدأ بـ /admin
 	if (request.nextUrl.pathname.startsWith("/admin")) {

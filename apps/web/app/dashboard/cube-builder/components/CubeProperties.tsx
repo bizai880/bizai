@@ -1,16 +1,6 @@
 "use client";
 
-import {
-	Code,
-	Cpu,
-	Database,
-	Download,
-	Eye,
-	Save,
-	Settings,
-	Upload,
-	Zap,
-} from "lucide-react";
+import { Code, Cpu, Database, Eye, Save, Settings, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,7 +47,7 @@ export function CubeProperties({ cube, onUpdate }: CubePropertiesProps) {
 		} else {
 			resetForm();
 		}
-	}, [cube]);
+	}, [cube, resetForm]);
 
 	const resetForm = () => {
 		setName("");

@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(
-	request: NextRequest,
+	_request: NextRequest,
 	{ params }: { params: { id: string } },
 ) {
 	try {
@@ -15,7 +15,7 @@ export async function GET(
 			estimatedCompletion: new Date(Date.now() + 30000).toISOString(),
 			timestamp: new Date().toISOString(),
 		});
-	} catch (error) {
+	} catch (_error) {
 		return NextResponse.json(
 			{
 				success: false,
@@ -42,7 +42,7 @@ export async function POST(
 			data: body,
 			timestamp: new Date().toISOString(),
 		});
-	} catch (error) {
+	} catch (_error) {
 		return NextResponse.json(
 			{ success: false, error: "Invalid request" },
 			{ status: 400 },

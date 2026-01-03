@@ -8,19 +8,17 @@ import {
 } from "./email-templates";
 import { parseExcelFile } from "./excel-parser";
 import { scheduleAutomation } from "./scheduler";
-import {
-	type AlertResult,
-	AlertRule,
-	type AutomationConfig,
-	type CubeExecutionResult,
-	type EmailConfig,
-	type SalesRecord,
+import type {
+	AlertResult,
+	AutomationConfig,
+	CubeExecutionResult,
+	EmailConfig,
+	SalesRecord,
 } from "./types";
 
 export class SalesOutlookAutomationCube extends BaseCube {
 	private transporter: nodemailer.Transporter | null = null;
 	private config: AutomationConfig | null = null;
-	private lastExecution: Date | null = null;
 	private alertHistory: Map<string, Date> = new Map();
 
 	constructor() {

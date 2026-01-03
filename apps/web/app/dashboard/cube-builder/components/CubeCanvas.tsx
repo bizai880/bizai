@@ -21,8 +21,6 @@ import {
 	Cpu,
 	Database,
 	Download,
-	Eye,
-	Move,
 	Plus,
 	Trash2,
 	Upload,

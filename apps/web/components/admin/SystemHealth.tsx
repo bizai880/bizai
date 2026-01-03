@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
-const MotionDiv = dynamic(
+const _MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );

@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import NotificationList from "./NotificationList";
 import { useNotifications } from "./NotificationProvider";
 
-const MotionDiv = dynamic(
+const _MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );

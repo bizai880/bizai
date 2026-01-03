@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const MotionDiv = dynamic(
+const _MotionDiv = dynamic(
 	() => import("framer-motion").then((mod) => ({ default: mod.motion.div })),
 	{ ssr: false },
 );
@@ -10,7 +10,6 @@ const MotionDiv = dynamic(
 import {
 	Calendar,
 	CheckCircle,
-	ChevronDown,
 	Crown,
 	Mail,
 	MoreVertical,

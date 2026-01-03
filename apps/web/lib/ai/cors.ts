@@ -102,7 +102,7 @@ export class AICore {
 		}
 
 		// اختيار النموذج المناسب
-		const model = this.selectModel(request);
+		const _model = this.selectModel(request);
 
 		let lastError: Error | null = null;
 
@@ -252,8 +252,7 @@ export class AICore {
 	private selectModel(request: AIRequest): AIModel {
 		// اختيار النموذج بناءً على المتطلبات
 		const isArabic =
-			request.language === "ar" ||
-			(request.prompt && request.prompt.match(/[\u0600-\u06FF]/));
+			request.language === "ar" || request.prompt?.match(/[\u0600-\u06FF]/);
 		const needsLongContext = request.prompt && request.prompt.length > 1000;
 
 		let filteredModels = this.models.filter((model) =>
@@ -282,7 +281,7 @@ export class AICore {
 
 	private async logUsage(
 		response: AIResponse,
-		request: AIRequest,
+		_request: AIRequest,
 	): Promise<void> {
 		try {
 			// استخدام fetch فقط في بيئة المتصفح

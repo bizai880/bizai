@@ -66,7 +66,7 @@ export function useAI() {
 				setIsLoading(false);
 			}
 		},
-		[],
+		[trackStatus],
 	);
 
 	const trackStatus = useCallback(async (requestId: string) => {

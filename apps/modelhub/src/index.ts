@@ -4,7 +4,7 @@ import { CubeManager } from "./core/manager";
 import { SalesOutlookAutomationCube } from "./cubes/integration/SalesOutlookAutomation";
 import { FaceRecognitionCube } from "./cubes/vision/FaceRecognition";
 
-async function initializeCubes() {
+async function _initializeCubes() {
 	const cubeManager = new CubeManager();
 
 	// تسجيل مكعب أتمتة المبيعات

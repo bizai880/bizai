@@ -1,12 +1,11 @@
 import { SalesOutlookAutomationCube } from "@bizai/modelhub";
-import {
-	AIModelConfig,
-	type AIProvider,
-	type AIRequest,
-	type AIResponse,
-	type CubeExecutionInput,
-	type CubeExecutionResult,
-	type CubeMetadata,
+import type {
+	AIProvider,
+	AIRequest,
+	AIResponse,
+	CubeExecutionInput,
+	CubeExecutionResult,
+	CubeMetadata,
 } from "@bizai/shared";
 import { GeminiProvider } from "./providers/gemini";
 import { GroqProvider } from "./providers/groq";
@@ -14,7 +13,7 @@ import { HuggingFaceProvider } from "./providers/huggingface";
 import { LocalAIProvider } from "./providers/local";
 import { ModelHubClient } from "./providers/modelhub";
 
-async function runSalesAutomation() {
+async function _runSalesAutomation() {
 	const cube = new SalesOutlookAutomationCube();
 	await cube.initialize();
 
@@ -24,7 +23,7 @@ async function runSalesAutomation() {
 			senderEmail: process.env.SALES_EMAIL,
 			senderName: "Sales Automation System",
 			smtpServer: process.env.SMTP_SERVER,
-			smtpPort: parseInt(process.env.SMTP_PORT || "587"),
+			smtpPort: parseInt(process.env.SMTP_PORT || "587", 10),
 			smtpUsername: process.env.SMTP_USERNAME,
 			smtpPassword: process.env.SMTP_PASSWORD,
 			useSSL: true,
@@ -170,7 +169,7 @@ export class AIOrchestrator {
 				if (!this.cubeCategories.has(cube.category)) {
 					this.cubeCategories.set(cube.category, []);
 				}
-				this.cubeCategories.get(cube.category)!.push(cube.id);
+				this.cubeCategories.get(cube.category)?.push(cube.id);
 			});
 
 			console.log(`📦 Loaded ${cubes.length} cubes from ModelHub`);
@@ -315,7 +314,7 @@ export class AIOrchestrator {
 			if (!this.cubeCategories.has(cube.category)) {
 				this.cubeCategories.set(cube.category, []);
 			}
-			this.cubeCategories.get(cube.category)!.push(cube.id);
+			this.cubeCategories.get(cube.category)?.push(cube.id);
 		});
 	}
 
@@ -380,7 +379,7 @@ export class AIOrchestrator {
 
 	async processWithCache(request: AIRequest): Promise<AIResponse> {
 		// Create unique cache key for the request
-		const cacheKey = this.generateCacheKey(request);
+		const _cacheKey = this.generateCacheKey(request);
 
 		// TODO: Implement actual cache retrieval
 		// const cached = await cache.getAIResult<AIResponse>(cacheKey);
@@ -437,7 +436,7 @@ export class AIOrchestrator {
 					continue;
 				}
 
-				const cubeMetadata = this.cubeRegistry.get(cubeId)!;
+				const _cubeMetadata = this.cubeRegistry.get(cubeId)!;
 
 				// 4. تحضير مدخلات المكعب بناءً على السياق
 				const cubeInput = await this.prepareCubeInput(
@@ -627,7 +626,7 @@ export class AIOrchestrator {
 
 	private determineExecutionOrder(
 		cubes: string[],
-		requirements: SystemRequirements,
+		_requirements: SystemRequirements,
 	): string[] {
 		// ترتيب تنفيذ المكعبات حسب التبعيات
 		const dependencies: Record<string, string[]> = {
@@ -804,7 +803,7 @@ export class AIOrchestrator {
 					input.language,
 				);
 				return response;
-			} catch (error) {
+			} catch (_error) {
 				console.warn("HuggingFace sentiment analysis failed, using fallback");
 			}
 		}
@@ -1041,7 +1040,7 @@ export class AIOrchestrator {
 
 	// =============== وظائف مساعدة ===============
 
-	private async extractImageInfo(description: string): Promise<string> {
+	private async extractImageInfo(_description: string): Promise<string> {
 		// في الواقع، سيكون هناك رفع صورة
 		// هذا للعرض التوضيحي فقط
 		return "sample_image_base64_or_url";
@@ -1056,16 +1055,16 @@ export class AIOrchestrator {
 
 		previousResults.forEach((result) => {
 			if (result.data && typeof result.data === "string") {
-				textData += " " + result.data;
-			} else if (result.data && result.data.text) {
-				textData += " " + result.data.text;
+				textData += ` ${result.data}`;
+			} else if (result.data?.text) {
+				textData += ` ${result.data.text}`;
 			}
 		});
 
 		return textData;
 	}
 
-	private async generateSampleData(description: string): Promise<number[]> {
+	private async generateSampleData(_description: string): Promise<number[]> {
 		// توليد بيانات عينة للعرض التوضيحي
 		return Array.from(
 			{ length: 30 },
@@ -1078,7 +1077,7 @@ export class AIOrchestrator {
 	): Promise<any[]> {
 		const data: any[] = [];
 
-		cubeResults.forEach((result, index) => {
+		cubeResults.forEach((result, _index) => {
 			if (result.success && result.data) {
 				data.push({
 					cube: result.cubeId,
@@ -1165,14 +1164,14 @@ export class AIOrchestrator {
 		return Math.ceil(baseTime);
 	}
 
-	private addChartToSheet(sheet: any, chartConfig: any): void {
+	private addChartToSheet(_sheet: any, chartConfig: any): void {
 		// تنفيذ إضافة الرسم البياني
 		// هذه دالة افتراضية، تحتاج إلى تنفيذ فعلي
 		console.log("Adding chart to sheet:", chartConfig);
 	}
 
 	private async uploadToStorage(
-		buffer: Buffer,
+		_buffer: Buffer,
 		filename: string,
 	): Promise<string> {
 		// رفع الملف إلى التخزين السحابي

@@ -114,7 +114,7 @@ export class ExcelGenerator {
 		const headerRow = worksheet.addRow(columns.map((col) => col.name));
 
 		// تطبيق أنماط الرؤوس
-		headerRow.eachCell((cell: any, colNumber: number) => {
+		headerRow.eachCell((cell: any, _colNumber: number) => {
 			cell.font = { bold: true, size: 12, color: { argb: "FFFFFFFF" } };
 			cell.fill = {
 				type: "pattern",

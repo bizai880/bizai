@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 // مفتاح التشفير (يجب أن يكون 32 بايت لـ AES-256)
 const ENCRYPTION_KEY =
@@ -161,7 +161,7 @@ export class JWTService {
 			}
 
 			return payload;
-		} catch (error) {
+		} catch (_error) {
 			throw new Error("Invalid token");
 		}
 	}
@@ -176,7 +176,7 @@ export class JWTService {
 
 	private parseExpiresIn(expiresIn: string): number {
 		const unit = expiresIn.slice(-1);
-		const value = parseInt(expiresIn.slice(0, -1));
+		const value = parseInt(expiresIn.slice(0, -1), 10);
 
 		switch (unit) {
 			case "s":

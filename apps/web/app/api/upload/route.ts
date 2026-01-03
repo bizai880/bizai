@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 	}
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
 	return NextResponse.json({
 		endpoint: "file-upload",
 		maxFileSize: "50MB",

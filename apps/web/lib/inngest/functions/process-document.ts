@@ -1,6 +1,6 @@
 export async function processDocument(
 	documentId: string,
-	options?: any,
+	_options?: any,
 ): Promise<{ success: boolean; processedUrl?: string }> {
 	console.log("Processing document:", documentId);
 

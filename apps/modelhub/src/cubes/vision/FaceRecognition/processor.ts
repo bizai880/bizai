@@ -1,11 +1,8 @@
-import * as tf from "@tensorflow/tfjs-node";
 import { createCanvas, loadImage } from "canvas";
 import * as faceapi from "face-api.js";
 import { BaseCube } from "../../../core/BaseCube";
 
 export class FaceRecognitionCube extends BaseCube {
-	private model: unknown;
-
 	constructor() {
 		super({
 			name: "Face Recognition",
@@ -138,7 +135,7 @@ export class FaceRecognitionCube extends BaseCube {
 	}
 
 	private async loadReferenceFace(
-		referenceFace: string,
+		_referenceFace: string,
 	): Promise<Float32Array> {
 		// منطق لتحميل الوجه المرجعي
 		// يمكن أن يكون من قاعدة بيانات أو ملف

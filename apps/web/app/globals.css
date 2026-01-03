@@ -673,11 +673,11 @@
 	/* الطباعة */
 	@media print {
 		.no-print {
-			display: none !important;
+			display: none;
 		}
 
 		.print-only {
-			display: block !important;
+			display: block;
 		}
 	}
 

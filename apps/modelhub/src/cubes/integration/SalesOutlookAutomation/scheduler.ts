@@ -66,8 +66,6 @@ function getCronExpression(interval: string): string | null {
 		case "monthly":
 			// 9 صباحاً أول يوم من الشهر
 			return "0 9 1 * *";
-
-		case "manual":
 		default:
 			return null;
 	}
