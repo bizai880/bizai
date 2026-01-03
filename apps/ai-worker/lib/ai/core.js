@@ -56,7 +56,7 @@ var __generator =
 			typeof Symbol === "function" &&
 				(g.Symbol.iterator = function () {
 					return this;
-				}),
+				})
 			g
 		);
 		function verb(n) {
