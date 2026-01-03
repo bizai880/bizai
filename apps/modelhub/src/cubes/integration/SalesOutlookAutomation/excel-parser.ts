@@ -129,7 +129,7 @@ function parseDate(dateValue: unknown): Date | null {
 				.replace(/،/g, ",");
 
 			const arabicParsed = new Date(arabicDate);
-			if (!isNaN(arabicParsed.getTime())) {
+			if (!Number.isNaN(arabicParsed.getTime())) {
 				return arabicParsed;
 			}
 		}
