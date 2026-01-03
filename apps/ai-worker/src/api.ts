@@ -86,7 +86,7 @@ export async function authenticate(
 	next: () => void,
 ) {
 	try {
-		const authHeader = req.headers["authorization"];
+		const authHeader = req.headers.authorization;
 		const token = authHeader?.split(" ")[1];
 
 		if (!token) {
