@@ -11,7 +11,7 @@ if (require.main === module) {
 	var PORT_1 = process.env.PORT || 3001;
 	app.use(express.json());
 	app.use("/api", api_1.default.createApiRouter());
-	app.get("/", (req, res) => {
+	app.get("/", (_req, res) => {
 		res.json({
 			service: "ai-worker-api",
 			status: "running",
