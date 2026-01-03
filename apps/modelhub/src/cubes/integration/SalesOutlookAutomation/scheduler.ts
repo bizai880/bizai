@@ -5,7 +5,7 @@ export async function scheduleAutomation(
 	config: AutomationConfig,
 	interval: string,
 	processor: Function,
-	input: any,
+	input: unknown,
 ): Promise<void> {
 	const cronExpression = getCronExpression(interval);
 
@@ -33,7 +33,7 @@ export async function scheduleAutomation(
 			console.log(`📊 Summary:`, result.summary);
 			console.log(`📧 Emails sent: ${result.alertsSent}`);
 			console.log(`⏱️ Next check: ${result.nextCheck}`);
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error(`❌ Scheduled automation failed:`, error.message);
 		}
 	});
