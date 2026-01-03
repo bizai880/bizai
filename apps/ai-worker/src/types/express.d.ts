@@ -1,6 +1,6 @@
 declare module "express" {
 	export interface Request {
-		user?: any;
+		user?: unknown;
 	}
 }
 export { Request, Response } from "express";
