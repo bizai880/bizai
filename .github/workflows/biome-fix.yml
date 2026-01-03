@@ -67,8 +67,6 @@ jobs:
         run: |
           echo "Applying auto-fixes..."
           
-          # تمكين التنسيق مع الأخطاء أولاً
-          biome format --write --formatter.format-with--errors=true . || true
           # 1. تنظيم الواردات ثانيه
           biome check --write . || true
           
