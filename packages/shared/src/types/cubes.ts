@@ -6,8 +6,8 @@ export interface CubeMetadata {
 	author: string;
 	category: "vision" | "nlp" | "data" | "integration" | "custom";
 	tags: string[];
-	inputSchema: Record<string, any>;
-	outputSchema: Record<string, any>;
+	inputSchema: Record<string, unknown>;
+	outputSchema: Record<string, unknown>;
 	price: number;
 	usageLimit: number;
 	isActive: boolean;
@@ -17,7 +17,7 @@ export interface CubeMetadata {
 
 export interface CubeExecutionInput {
 	cubeId: string;
-	data: any;
+	data: unknown;
 	options?: {
 		cache?: boolean;
 		timeout?: number;
@@ -27,7 +27,7 @@ export interface CubeExecutionInput {
 
 export interface CubeExecutionResult {
 	success: boolean;
-	data?: any;
+	data?: unknown;
 	error?: string;
 	executionTime: number;
 	cached: boolean;
