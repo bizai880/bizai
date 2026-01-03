@@ -6,7 +6,7 @@ import { verifyToken } from "../lib/crypto/encryption";
 import { getHealthStatus } from "./health/index";
 
 // Type definitions
-interface ApiResponse<T = any> {
+interface ApiResponse<T = unknown> {
 	success: boolean;
 	data?: T;
 	error?: string;
@@ -14,7 +14,7 @@ interface ApiResponse<T = any> {
 }
 
 interface AuthRequest extends Request {
-	user?: any;
+	user?: unknown;
 	token?: string;
 }
 
