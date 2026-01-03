@@ -32,7 +32,7 @@ export abstract class BaseCube {
 
 	async execute(input: CubeExecutionInput): Promise<CubeExecutionResult> {
 		const startTime = Date.now();
-		let _cached = false;
+		const _cached = false;
 
 		try {
 			// التحقق من وجود تخزين مؤقت
