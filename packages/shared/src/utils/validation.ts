@@ -27,8 +27,8 @@ export function sanitizeInput(input: string): string {
 }
 
 export function validateObject<_T>(
-	obj: any,
-	schema: Record<string, (value: any) => boolean>,
+	obj: unknown,
+	schema: Record<string, (value: unknown) => boolean>,
 ): { valid: boolean; errors: string[] } {
 	const errors: string[] = [];
 
