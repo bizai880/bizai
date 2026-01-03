@@ -1,7 +1,7 @@
 import { Redis } from "@upstash/redis";
 
 // أنواع بيانات التخزين المؤقت
-export interface CacheItem<T = any> {
+export interface CacheItem<T = unknown> {
 	data: T;
 	timestamp: number;
 	ttl: number;
@@ -19,7 +19,7 @@ export class BizAICache {
 	}
 
 	// تخزين نتيجة AI مع TTL
-	async setAIResult(key: string, data: any, ttl: number = 3600): Promise<void> {
+	async setAIResult(key: string, data: unknown, ttl: number = 3600): Promise<void> {
 		const cacheItem: CacheItem = {
 			data,
 			timestamp: Date.now(),
@@ -32,7 +32,7 @@ export class BizAICache {
 	}
 
 	// استرجاع نتيجة AI
-	async getAIResult<T = any>(key: string): Promise<T | null> {
+	async getAIResult<T = unknown>(key: string): Promise<T | null> {
 		const cached = await this.redis.get<string>(`${this.prefix}ai:${key}`);
 
 		if (!cached) return null;
@@ -49,7 +49,7 @@ export class BizAICache {
 	}
 
 	// تخزين حالة الطلب
-	async setRequestStatus(requestId: string, status: any): Promise<void> {
+	async setRequestStatus(requestId: string, status: unknown): Promise<void> {
 		await this.redis.set(
 			`${this.prefix}request:${requestId}`,
 			JSON.stringify(status),
@@ -58,7 +58,7 @@ export class BizAICache {
 	}
 
 	// استرجاع حالة الطلب
-	async getRequestStatus(requestId: string): Promise<any> {
+	async getRequestStatus(requestId: string): Promise<unknown> {
 		const status = await this.redis.get(`${this.prefix}request:${requestId}`);
 		return status ? JSON.stringify(status) : null;
 	}
@@ -69,9 +69,9 @@ export class BizAICache {
 	}
 
 	// الحصول على الإحصائيات
-	async getStats(): Promise<any> {
+	async getStats(): Promise<unknown> {
 		const keys = await this.redis.keys(`${this.prefix}*`);
-		const stats: any = {};
+		const stats: unknown = {};
 
 		for (const key of keys) {
 			const type = key.split(":")[1];
