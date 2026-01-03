@@ -17,6 +17,6 @@ export function generateId(): string {
 /**
  * Check if value is empty
  */
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
 	return value === null || value === undefined || value === "";
 }
