@@ -67,17 +67,16 @@ jobs:
         run: |
           echo "Applying auto-fixes..."
           
-          # 1. تنظيم الواردات أولاً
+          # تمكين التنسيق مع الأخطاء أولاً
+          biome format --write --formatter.format-with--errors=true . || true
+          # 1. تنظيم الواردات ثانيه
           biome check --write . || true
           
           # 2. تطبيق جميع الإصلاحات الآمنة
-          biome check --write . || true
+          biome check --write --unsafe=false . || true
           
           # 3. تنسيق الملفات
           biome format --write . || true
-          
-          # 4. تنسيق ملفات JSON
-          biome format --write "**/*.json" || true
           
           # حساب الملفات المعدلة
           CHANGED_FILES=$(git diff --name-only 2>/dev/null | wc -l || echo "0")
