@@ -19,7 +19,11 @@ export class BizAICache {
 	}
 
 	// تخزين نتيجة AI مع TTL
-	async setAIResult(key: string, data: unknown, ttl: number = 3600): Promise<void> {
+	async setAIResult(
+		key: string,
+		data: unknown,
+		ttl: number = 3600,
+	): Promise<void> {
 		const cacheItem: CacheItem = {
 			data,
 			timestamp: Date.now(),
