@@ -3,7 +3,7 @@
 export class DatabaseConnection {
 	private connected: boolean = false;
 
-	connect(_config: any): Promise<boolean> {
+	connect(_config: unknown): Promise<boolean> {
 		return new Promise((resolve) => {
 			setTimeout(() => {
 				this.connected = true;
