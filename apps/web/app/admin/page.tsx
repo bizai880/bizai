@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function AdminDashboard() {
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<unknown>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
 
