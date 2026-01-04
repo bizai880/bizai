@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
 		});
 
 		return response;
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Admin login error:", error);
 
 		// رسائل خطأ أكثر تحديداً
@@ -170,7 +170,7 @@ export async function GET(request: NextRequest) {
 			authenticated: true,
 			user: decoded,
 		});
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Token verification error:", error);
 
 		if (
