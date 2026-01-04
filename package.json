@@ -29,7 +29,7 @@
 		"format": "biome format --write .",
 		"format:check": "biome format .",
 		"format:staged": "biome format --staged --write",
-		"check": "biome check .",
+		"check": "biome check --unsafe .",
 		"check:fix": "biome check --write --unsafe .",
 		"check:ci": "biome ci .",
 		"check:staged": "biome check --staged --write",
@@ -44,8 +44,8 @@
 		"clean:biome": "rm -rf .biome-cache",
 		"install:all": "npm install && turbo run install",
 		"install:ci": "npm ci --legacy-peer-deps",
-		"biome": "biome check .",
-		"biome:check": "biome check .",
+		"biome": "biome check --unsafe .",
+		"biome:check": "biome check --unsafe .",
 		"biome:fix": "biome lint --write --unsafe .",
 		"biome:format": "biome format --write .",
 		"biome:ci": "biome ci .",
@@ -78,7 +78,7 @@
 		"turbo": "^2.7.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.10",
+		"@biomejs/biome": "^2.3.11",
 		"@types/node": "^22.0.0",
 		"@typescript-eslint/eslint-plugin": "^8.0.0",
 		"@typescript-eslint/parser": "^8.0.0",
@@ -173,7 +173,7 @@
 			"nodeVersion": "22",
 			"turboVersion": "2.7.2",
 			"cacheStrategy": "distributed",
-			"biomeVersion": "2.3.10"
+			"biomeVersion": "2.3.11"
 		}
 	},
 	"vercel": {
@@ -236,7 +236,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"prettier": "^3.3.3",
-		"@biomejs/biome": "^2.3.10"
+		"@biomejs/biome": "^2.3.11"
 	},
 	"biome": {
 		"extends": "./biome.json"
