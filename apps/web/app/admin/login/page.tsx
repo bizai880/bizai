@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
 
 			// إعادة التوجيه إلى لوحة التحكم
 			router.push(redirect);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			setError(err.message || "حدث خطأ أثناء تسجيل الدخول");
 			console.error("Login error:", err);
 		} finally {
